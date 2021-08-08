@@ -1,4 +1,4 @@
-package com.examples.suggestionsProject;
+package com.examples.suggestions_project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

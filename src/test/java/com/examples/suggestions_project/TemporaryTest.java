@@ -1,10 +1,10 @@
-package com.examples.suggestionsProject;
+package com.examples.suggestions_project;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.examples.suggestionsProject.model.Suggestion;
+import com.examples.suggestions_project.model.Suggestion;
 
 /**
  * A temporary test just to make sure jacoco.xml is generated and a report can

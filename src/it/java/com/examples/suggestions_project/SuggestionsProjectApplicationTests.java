@@ -1,4 +1,4 @@
-package com.examples.suggestionsProject;
+package com.examples.suggestions_project;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
