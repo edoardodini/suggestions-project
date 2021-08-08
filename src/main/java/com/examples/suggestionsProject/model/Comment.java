@@ -1,4 +1,4 @@
-package com.example.suggestionProject.model;
+package com.examples.suggestionsProject.model;
 
 import java.util.Objects;
 
