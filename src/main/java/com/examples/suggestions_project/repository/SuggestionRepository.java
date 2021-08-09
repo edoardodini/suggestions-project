@@ -15,10 +15,6 @@ public class SuggestionRepository{
 	public List<Suggestion> findByVisible(Boolean visible){
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
-
-	public Optional<Suggestion> findByIdAndVisible(long id, boolean visible){
-		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
-	}
 	
 	public Optional<Suggestion> findById(long id){
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);

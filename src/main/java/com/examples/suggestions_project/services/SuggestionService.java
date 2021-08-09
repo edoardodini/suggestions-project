@@ -29,6 +29,15 @@ public class SuggestionService {
 	}
 
 	public Suggestion getSuggestionByIdAndVisible(long id, boolean visible) {
-		return suggestionRep.findByIdAndVisible(id, visible).orElse(null);
+		Suggestion suggestionToReturn = suggestionRep.findById(id).orElse(null);
+		if (suggestionToReturn == null) {
+			return null;
+		} else {
+			if (suggestionToReturn.getVisible() != visible) {
+				return null;
+			} else {
+				return suggestionToReturn;
+			}
+		}
 	}
 }
