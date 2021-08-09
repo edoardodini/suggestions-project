@@ -35,7 +35,7 @@ public class SuggestionService {
 		if (suggestionToReturn == null) {
 			return null;
 		} else {
-			if (suggestionToReturn.getVisible() != visible) {
+			if (!suggestionToReturn.getVisible().equals(visible)) {
 				return null;
 			} else {
 				return suggestionToReturn;
