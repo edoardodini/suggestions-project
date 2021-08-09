@@ -4,21 +4,21 @@ import java.util.Objects;
 
 public class Suggestion {
 
-	private Long id;
+	private long id;
 	private String suggestionText;
 	private Boolean visible;
 
-	public Suggestion(Long id, String suggestionText, boolean visible) {
+	public Suggestion(long id, String suggestionText, boolean visible) {
 		this.id = id;
 		this.suggestionText = suggestionText;
 		this.visible = visible;
 	}
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
