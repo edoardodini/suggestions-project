@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.examples.suggestions_project.model.Suggestion;
+import com.examples.suggestions_project.repository.SuggestionRepository;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
