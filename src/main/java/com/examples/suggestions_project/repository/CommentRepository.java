@@ -18,7 +18,7 @@ public class CommentRepository {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public Optional<Comment> findByCommentIdAndSuggestionId(Long CommentId, Long suggestionId){
+	public Optional<Comment> findByCommentIdAndSuggestionId(Long commentId, Long suggestionId){
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
