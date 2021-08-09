@@ -8,6 +8,12 @@ public class Comment {
 	private String commentText;
 	private Suggestion suggestion;
 
+	public Comment(Long commentId, String commentText, Suggestion suggestion) {
+		this.commentId = commentId;
+		this.commentText = commentText;
+		this.suggestion = suggestion;
+	}
+
 	public Long getCommentId() {
 		return commentId;
 	}
