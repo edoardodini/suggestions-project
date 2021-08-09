@@ -149,6 +149,33 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<!-- Plugin for mutation testing -->
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<version>1.4.10</version>
+					<configuration>
+						<targetClasses>
+							<param>com.examples.suggestions_project.services.*</param>
+						</targetClasses>
+						<excludedTestClasses>
+							<param>main</param>
+						</excludedTestClasses>
+						<mutators>
+							<mutator>DEFAULTS</mutator>
+						</mutators>
+						<mutationThreshold>80</mutationThreshold>
+						<timeoutFactor>2</timeoutFactor>
+						<timeoutConstant>13000</timeoutConstant>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>mutationCoverage</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 				<plugin>
 					<!-- Plugin for performing Code Coverage -->
 					<groupId>org.jacoco</groupId>
