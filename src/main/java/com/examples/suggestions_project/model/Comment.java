@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public class Comment {
 
-	private long commentId;
+	private Long commentId;
 	private String commentText;
 	private Suggestion suggestion;
 
-	public long getCommentId() {
+	public Long getCommentId() {
 		return commentId;
 	}
 
-	public void setCommentId(long commentId) {
+	public void setCommentId(Long commentId) {
 		this.commentId = commentId;
 	}
 
