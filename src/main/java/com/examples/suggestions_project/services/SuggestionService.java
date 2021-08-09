@@ -3,8 +3,10 @@ package com.examples.suggestions_project.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.repository.SuggestionRepository;
 
@@ -38,6 +40,24 @@ public class SuggestionService {
 			} else {
 				return suggestionToReturn;
 			}
+		}
+	}
+
+	public Suggestion updateSuggestionById(long id, Suggestion replacementSuggestion) throws ResourceNotFoundException {
+		if (!suggestionRep.findById(id).isPresent()) {
+			throw new ResourceNotFoundException("It is not possible to update a suggestion with the id: " + id);
+		} else {
+			replacementSuggestion.setId(id);
+			return suggestionRep.save(replacementSuggestion);
+		}
+	}
+
+	public void deleteById(Long suggestionId) throws ResourceNotFoundException {
+		try {
+			suggestionRep.deleteById(suggestionId);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException(
+					"It is not possible to delete a suggestion with the id: " + suggestionId);
 		}
 	}
 }
