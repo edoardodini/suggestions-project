@@ -22,9 +22,9 @@ public class SuggestionJpaTest {
 	public void testJpaMapping() {
 		Suggestion saved = entityManager.persistFlushFind(new Suggestion(null, "test", true));
 		assertThat(saved.getSuggestionText()).isEqualTo("test");
-		assertThat(saved.getVisible()).isEqualTo(true);
+		assertThat(saved.getVisible()).isTrue();
 		assertThat(saved.getId()).isNotNull();
-		assertThat(saved.getId()).isGreaterThan(0);
+		assertThat(saved.getId()).isPositive();
 	}
 
 }

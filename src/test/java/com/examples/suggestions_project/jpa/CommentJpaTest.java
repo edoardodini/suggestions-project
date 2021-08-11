@@ -26,7 +26,7 @@ public class CommentJpaTest {
 		assertThat(saved.getCommentText()).isEqualTo("commentText");
 		assertThat(saved.getSuggestion()).isEqualTo(savedSuggestion);
 		assertThat(saved.getCommentId()).isNotNull();
-		assertThat(saved.getCommentId()).isGreaterThan(0);
+		assertThat(saved.getCommentId()).isPositive();
 	}
 
 }
