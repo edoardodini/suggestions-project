@@ -1,5 +1,7 @@
 package com.examples.suggestions_project.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,12 @@ public class CommentJpaTest {
 
 	@Test
 	public void testJpaMapping() {
-		Comment saved = entityManager.persistFlushFind(new Comment(null,"commentText",new Suggestion(null, "test", true)));
+		Suggestion savedSuggestion = entityManager.persistFlushFind(new Suggestion(null, "test", true));
+		Comment saved = entityManager.persistFlushFind(new Comment(null, "commentText", savedSuggestion));
+		assertThat(saved.getCommentText()).isEqualTo("commentText");
+		assertThat(saved.getSuggestion()).isEqualTo(savedSuggestion);
+		assertThat(saved.getCommentId()).isNotNull();
+		assertThat(saved.getCommentId()).isGreaterThan(0);
 	}
 
 }
