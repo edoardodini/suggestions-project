@@ -14,5 +14,9 @@ public class SuggestionService {
 	public List<Suggestion> getAllByVisible(boolean visible) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
+
+	public Suggestion getSuggestionByIdAndVisible(long id, boolean visible) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);	
+	}
 	
 }
