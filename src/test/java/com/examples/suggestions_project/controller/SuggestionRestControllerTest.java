@@ -37,12 +37,26 @@ public class SuggestionRestControllerTest {
 	}
 
 	@Test
-	public void testAllEmployeesNotEmpty() throws Exception {
+	public void testAllSuggestionsNotEmpty() throws Exception {
 		when(suggestionService.getAllByVisible(true))
 				.thenReturn(asList(new Suggestion(1L, "first", true), new Suggestion(2L, "second", true)));
 		this.mvc.perform(get("/api/suggestions").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$[0].id", is(1))).andExpect(jsonPath("$[0].suggestionText", is("first")))
 				.andExpect(jsonPath("$[0].visible", is(true))).andExpect(jsonPath("$[1].id", is(2)))
 				.andExpect(jsonPath("$[1].suggestionText", is("second"))).andExpect(jsonPath("$[1].visible", is(true)));
+	}
+
+	@Test
+	public void testOneSuggestionsEmpty() throws Exception {
+		this.mvc.perform(get("/api/suggestions/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().string(""));
+	}
+
+	@Test
+	public void testOneSuggestionsNotEmpty() throws Exception {
+		when(suggestionService.getSuggestionByIdAndVisible(1, true)).thenReturn(new Suggestion(1L, "first", true));
+		this.mvc.perform(get("/api/suggestions/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.suggestionText", is("first")))
+				.andExpect(jsonPath("$.visible", is(true)));
 	}
 }
