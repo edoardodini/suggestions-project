@@ -50,4 +50,13 @@ public class CommentRestControllerTest {
 				.andExpect(jsonPath("$[1].suggestion.suggestionText", is("suggestionVisible")))
 				.andExpect(jsonPath("$[1].suggestion.visible", is(true)));
 	}
+
+	@Test
+	public void testAllSuggestionsNotEmptyButSuggestionNotVisible() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestionVisible", false);
+		when(commentService.getCommentsBySuggestionId(1L))
+				.thenReturn(asList(new Comment(1L, "first", suggestion), new Comment(2L, "second", suggestion)));
+		this.mvc.perform(get("/api/suggestions/1/comments").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().json("[]"));
+	}
 }
