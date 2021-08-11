@@ -21,6 +21,11 @@ public class CommentRestController {
 	
 	@GetMapping
 	public List<Comment> getAllComments(@PathVariable Long suggestionId) {
-		return commentService.getCommentsBySuggestionId(suggestionId);
+		if (!commentService.getCommentsBySuggestionId(suggestionId).isEmpty() && commentService
+				.getCommentsBySuggestionId(suggestionId).get(0).getSuggestion().getVisible().equals(true)) {
+			return commentService.getCommentsBySuggestionId(suggestionId);
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }
