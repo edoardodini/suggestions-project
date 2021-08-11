@@ -15,14 +15,14 @@ public class ActualUserTest {
 	public void testWithObject() {
 		Object object= new Object();
 		ActualUser actualUser= new ActualUser(object);
-		assertThat(actualUser.getUsername().equals(object.toString()));
+		assertThat(actualUser.getUsername()).isEqualTo(object.toString());
 	}
 
 	@Test
 	public void testWithString() {
 		String objectString = "obcjectString";
 		ActualUser actualUser= new ActualUser(objectString);
-		assertThat(actualUser.getUsername().equals(objectString));
+		assertThat(actualUser.getUsername()).isEqualTo(objectString);
 	}
 	
 	@Test
@@ -31,7 +31,7 @@ public class ActualUserTest {
 		userDetails = mock(UserDetails.class);
 		when(userDetails.getUsername()).thenReturn(expectedUsername);
 		ActualUser actualUser= new ActualUser(userDetails);
-		assertThat(actualUser.getUsername().equals(expectedUsername));
+		assertThat(actualUser.getUsername()).isEqualTo(expectedUsername);
 	}
 	
 	@Test
@@ -40,6 +40,6 @@ public class ActualUserTest {
 		userDetails = mock(UserDetails.class);
 		when(userDetails.getUsername()).thenReturn(expectedUsername);
 		ActualUser actualUser= new ActualUser(userDetails);
-		assertThat(actualUser.getUsername().equals(expectedUsername));
+		assertThat(actualUser.getUsername()).isEqualTo(expectedUsername);
 	}
 }

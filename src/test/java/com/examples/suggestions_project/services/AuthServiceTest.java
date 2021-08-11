@@ -19,13 +19,13 @@ public class AuthServiceTest {
 	@Test
 	@WithMockUser(username="admin",roles={"admin"})
 	public void testIsAdminWhenAdmin() {
-		assertThat(authenticationService.isAdmin()).isEqualTo(true);
+		assertThat(authenticationService.isAdmin()).isTrue();
 	}
 	
 	@Test
 	@WithMockUser(username="notAdmin",roles={"notAdmin"})
 	public void testIsAdminWhenNotAdmin() {
-		assertThat(authenticationService.isAdmin()).isEqualTo(false);
+		assertThat(authenticationService.isAdmin()).isFalse();
 	}
 
 }

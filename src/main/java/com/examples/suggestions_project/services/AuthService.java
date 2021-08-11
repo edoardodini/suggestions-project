@@ -7,11 +7,9 @@ import com.examples.suggestions_project.model.ActualUser;
 
 @Service
 public class AuthService {
-
-	private ActualUser actualUser;
 	
 	public boolean isAdmin() {
-		actualUser = new ActualUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		ActualUser actualUser = new ActualUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 		return actualUser.getUsername().equals("admin");
 	}
 }
