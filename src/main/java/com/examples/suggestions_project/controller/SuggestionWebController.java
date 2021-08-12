@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.SuggestionService;
 
@@ -13,6 +14,8 @@ import com.examples.suggestions_project.services.SuggestionService;
 public class SuggestionWebController {
 
 	private static final String SUGGESTIONS_ATTRIBUTE = "suggestions";
+	private static final String SUGGESTION_ATTRIBUTE = "suggestion";
+	private static final String MESSAGE_ATTRIBUTE = "message";
 	private static final String HIDDEN_SUGGESTIONS_ATTRIBUTE = "hiddensuggestions";
 	private static final String USER_ATTRIBUTE = "user";
 
@@ -36,8 +39,14 @@ public class SuggestionWebController {
 		return "suggestionView";
 	}
 
-	@GetMapping("suggestions/hide/{id}")
+	@GetMapping("/suggestions/hide/{id}")
 	public String hideSuggestion(@PathVariable long id, Model model) {
+		Suggestion suggestionById = suggestionService.getSuggestionById(id);
+		if (suggestionById != null) {
+			suggestionById.setVisible(!(suggestionById.getVisible()));
+		}
+		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
+		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
 		return "hide";
 	}
 }
