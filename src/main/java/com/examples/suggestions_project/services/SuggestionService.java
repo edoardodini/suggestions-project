@@ -11,7 +11,7 @@ public class SuggestionService {
 
 	private static final String TEMPORARY_IMPLEMENTATION = "Temporary implementation";
 
-	public List<Suggestion> getAllSuggestionsByVisible(boolean visible) {
+	public List<Suggestion> getAllByVisible(boolean visible) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
