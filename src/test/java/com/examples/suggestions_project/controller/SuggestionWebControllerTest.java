@@ -1,6 +1,8 @@
 package com.examples.suggestions_project.controller;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -78,23 +80,53 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("hiddensuggestions", hiddenSuggestions))
 				.andExpect(model().attribute("user", "admin"));
 	}
-	
+
 	@Test
 	public void testStatus200Hide() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
 		mvc.perform(get("/suggestions/hide/1")).andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
 	public void testReturnHideView() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
 		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/hide/1")).andReturn().getModelAndView(),
 				"hide");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+	@Test
+	public void testHideViewWithSuggestionToHide() throws Exception {
+		Long suggestionId = 1L;
+		Suggestion suggestion = spy(new Suggestion(suggestionId, "suggestionText", true));
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+
+		mvc.perform(get("/suggestions/hide/" + suggestionId)).andExpect(view().name("hide"))
+				.andExpect(model().attribute("suggestion", suggestion)).andExpect(model().attribute("message", ""));
+		verify(suggestion).setVisible(false);
+	}
+
+	@Test
+	public void testHideViewWithSuggestionsToShow() throws Exception {
+		Long suggestionId = 1L;
+		Suggestion suggestion = spy(new Suggestion(suggestionId, "suggestionText", false));
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+
+		mvc.perform(get("/suggestions/hide/" + suggestionId)).andExpect(view().name("hide"))
+				.andExpect(model().attribute("suggestion", suggestion)).andExpect(model().attribute("message", ""));
+		verify(suggestion).setVisible(true);
+	}
+
+	@Test
+	public void testHideViewWithoutSuggestion() throws Exception {
+		Long suggestionId = 1L;
+		Suggestion suggestion = null;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+
+		mvc.perform(get("/suggestions/hide/" + suggestionId)).andExpect(view().name("hide"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("message", "No suggestion found with id: " + suggestionId));
+	}
+
 }

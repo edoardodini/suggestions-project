@@ -15,4 +15,8 @@ public class SuggestionService {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
+	public Suggestion getSuggestionById(Long suggestionId) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
+
 }
