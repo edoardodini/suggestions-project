@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Suggestion;
 
 @Service
@@ -16,6 +17,18 @@ public class SuggestionService {
 	}
 
 	public Suggestion getSuggestionById(Long suggestionId) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
+
+	public Suggestion insertNewSuggestion(Suggestion suggestion) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
+
+	public Suggestion updateSuggestionById(Long suggestionId, Suggestion suggestion) throws ResourceNotFoundException {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
+
+	public void deleteById(Long suggestionId) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 

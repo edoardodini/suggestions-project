@@ -5,6 +5,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -210,4 +211,26 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("message", "No suggestion found with id: " + suggestionId));
 	}
 
+	@Test
+	public void testPostSaveSuggestionShouldInsertNewEmployee() throws Exception {
+		mvc.perform(post("/suggestions/save").param("suggestionText", "suggestion"))
+				.andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
+		Suggestion suggestionToSave=new Suggestion();
+		suggestionToSave.setSuggestionText("suggestion");
+		verify(suggestionService).insertNewSuggestion(suggestionToSave);
+	}
+
+	@Test
+	public void testPostUpdateShouldUpdateExistingEmployee() throws Exception {
+		mvc.perform(post("/suggestions/update").param("id", "2").param("suggestionText", "suggestion").param("visible", "true"))
+				.andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
+		verify(suggestionService).updateSuggestionById(2L, new Suggestion(2L, "suggestion", true));
+	}
+	
+	@Test
+	public void testPostDeleteSuggestionShouldInsertNewEmployee() throws Exception {
+		mvc.perform(post("/suggestions/remove").param("id", "1"))
+				.andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
+		verify(suggestionService).deleteById(1L);
+	}
 }
