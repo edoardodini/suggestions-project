@@ -70,6 +70,9 @@ public class SuggestionWebController {
 	
 	@GetMapping("suggestions/delete/{id}")
 	public String deleteSuggestion(@PathVariable long id, Model model) {
+		Suggestion suggestionById = suggestionService.getSuggestionById(id);
+		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
+		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
 		return "delete";
 	}
 }
