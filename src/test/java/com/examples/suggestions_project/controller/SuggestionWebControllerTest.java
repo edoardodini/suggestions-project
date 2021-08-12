@@ -22,17 +22,19 @@ public class SuggestionWebControllerTest {
 	public void testStatus200() throws Exception {
 		mvc.perform(get("/")).andExpect(status().is2xxSuccessful());
 	}
-	
+
 	@Test
 	public void testReturnHomeView() throws Exception {
-		ModelAndViewAssert.assertViewName(mvc.perform(get("/"))
-			.andReturn()
-			.getModelAndView(), "home");
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/")).andReturn().getModelAndView(), "home");
 	}
-	
+
 	@Test
 	public void testStatus200Suggestions() throws Exception {
 		mvc.perform(get("/suggestions")).andExpect(status().is2xxSuccessful());
 	}
-	
+
+	@Test
+	public void testReturnSuggestionView() throws Exception {
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions")).andReturn().getModelAndView(), "suggestionView");
+	}
 }

@@ -11,4 +11,9 @@ public class SuggestionWebController {
 	public String home(Model model) {
 		return "home";
 	}
+	
+	@GetMapping("/suggestions")
+	public String index(Model model) {
+		return "suggestionView";
+	}
 }
