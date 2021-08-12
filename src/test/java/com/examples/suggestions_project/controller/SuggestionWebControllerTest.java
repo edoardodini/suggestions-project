@@ -140,4 +140,25 @@ public class SuggestionWebControllerTest {
 				"edit");
 	}
 
+	@Test
+	public void testEditViewWithSuggestionsToEdit() throws Exception {
+		Long suggestionId = 1L;
+		Suggestion suggestion = new Suggestion(suggestionId, "suggestionText", false);
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+
+		mvc.perform(get("/suggestions/edit/" + suggestionId)).andExpect(view().name("edit"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("operation", "update")).andExpect(model().attribute("message", ""));
+	}
+
+	@Test
+	public void testEditViewWithoutSuggestionToEdit() throws Exception {
+		Long suggestionId = 1L;
+		Suggestion suggestion = null;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+
+		mvc.perform(get("/suggestions/edit/" + suggestionId)).andExpect(view().name("edit"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("message", "No suggestion found with id: " + suggestionId));
+	}
 }

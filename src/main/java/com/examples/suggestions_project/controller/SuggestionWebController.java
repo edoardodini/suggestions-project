@@ -14,9 +14,10 @@ import com.examples.suggestions_project.services.SuggestionService;
 public class SuggestionWebController {
 
 	private static final String SUGGESTIONS_ATTRIBUTE = "suggestions";
+	private static final String HIDDEN_SUGGESTIONS_ATTRIBUTE = "hiddensuggestions";
 	private static final String SUGGESTION_ATTRIBUTE = "suggestion";
 	private static final String MESSAGE_ATTRIBUTE = "message";
-	private static final String HIDDEN_SUGGESTIONS_ATTRIBUTE = "hiddensuggestions";
+	private static final String OPERATION_ATTRIBUTE = "operation";
 	private static final String USER_ATTRIBUTE = "user";
 
 	@Autowired
@@ -49,9 +50,13 @@ public class SuggestionWebController {
 		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
 		return "hide";
 	}
-	
+
 	@GetMapping("/suggestions/edit/{id}")
 	public String editSuggestion(@PathVariable long id, Model model) {
+		Suggestion suggestionById = suggestionService.getSuggestionById(id);
+		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
+		model.addAttribute(OPERATION_ATTRIBUTE, "update");
+		model.addAttribute(MESSAGE_ATTRIBUTE, "");
 		return "edit";
 	}
 }
