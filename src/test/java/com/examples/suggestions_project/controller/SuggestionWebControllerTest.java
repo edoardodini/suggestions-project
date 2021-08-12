@@ -70,7 +70,7 @@ public class SuggestionWebControllerTest {
 		List<Suggestion> hiddenSuggestions = asList(new Suggestion(2L, "hiddenSuggestionText", false));
 
 		when(suggestionService.getAllByVisible(true)).thenReturn(suggestions);
-
+		when(suggestionService.getAllByVisible(false)).thenReturn(hiddenSuggestions);
 		when(authService.isAdmin()).thenReturn(true);
 
 		mvc.perform(get("/suggestions")).andExpect(view().name("suggestionView"))

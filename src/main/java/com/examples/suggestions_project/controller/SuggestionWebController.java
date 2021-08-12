@@ -5,15 +5,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.SuggestionService;
 
 @Controller
 public class SuggestionWebController {
 	
 	private static final String SUGGESTIONS_ATTRIBUTE = "suggestions";
-
+	private static final String HIDDEN_SUGGESTIONS_ATTRIBUTE = "hiddensuggestions";
+	private static final String USER_ATTRIBUTE = "user";
+	
 	@Autowired
 	private SuggestionService suggestionService;
+	@Autowired
+	private AuthService authService;
 
 	@GetMapping("/")
 	public String home(Model model) {
@@ -22,6 +27,10 @@ public class SuggestionWebController {
 
 	@GetMapping("/suggestions")
 	public String index(Model model) {
+		if (authService.isAdmin()) {
+			model.addAttribute(USER_ATTRIBUTE, "admin");
+			model.addAttribute(HIDDEN_SUGGESTIONS_ATTRIBUTE, suggestionService.getAllByVisible(false));
+		}
 		model.addAttribute(SUGGESTIONS_ATTRIBUTE, suggestionService.getAllByVisible(true));
 		return "suggestionView";
 	}
