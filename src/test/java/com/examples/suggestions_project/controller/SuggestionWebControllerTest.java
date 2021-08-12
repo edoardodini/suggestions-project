@@ -169,7 +169,14 @@ public class SuggestionWebControllerTest {
 
 	@Test
 	public void testReturnNewView() throws Exception {
-		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/new")).andReturn().getModelAndView(),
-				"edit");
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/new")).andReturn().getModelAndView(), "edit");
 	}
+
+	@Test
+	public void testNewViewWithSuggestionsToEdit() throws Exception {
+		mvc.perform(get("/suggestions/new")).andExpect(view().name("edit"))
+				.andExpect(model().attribute("suggestion", new Suggestion()))
+				.andExpect(model().attribute("operation", "new")).andExpect(model().attribute("message", ""));
+	}
+
 }

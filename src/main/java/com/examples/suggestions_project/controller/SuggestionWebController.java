@@ -62,6 +62,9 @@ public class SuggestionWebController {
 
 	@GetMapping("/suggestions/new")
 	public String newSuggestion(Model model) {
+		model.addAttribute(SUGGESTION_ATTRIBUTE, new Suggestion());
+		model.addAttribute(MESSAGE_ATTRIBUTE, "");
+		model.addAttribute(OPERATION_ATTRIBUTE, "new");
 		return "edit";
 	}
 }

@@ -14,6 +14,10 @@ public class Suggestion {
 		this.visible = visible;
 	}
 
+	public Suggestion() {
+		//
+	}
+
 	public Long getId() {
 		return id;
 	}
