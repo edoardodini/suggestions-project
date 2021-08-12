@@ -67,4 +67,9 @@ public class SuggestionWebController {
 		model.addAttribute(OPERATION_ATTRIBUTE, "new");
 		return "edit";
 	}
+	
+	@GetMapping("suggestions/delete/{id}")
+	public String deleteSuggestion(@PathVariable long id, Model model) {
+		return "delete";
+	}
 }

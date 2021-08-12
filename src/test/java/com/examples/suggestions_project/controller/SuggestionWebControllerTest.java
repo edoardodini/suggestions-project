@@ -179,4 +179,15 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("operation", "new")).andExpect(model().attribute("message", ""));
 	}
 
+	@Test
+	public void testStatus200Delete() throws Exception {
+		mvc.perform(get("/suggestions/delete/1")).andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	public void testReturnDeleteView() throws Exception {
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/delete/1")).andReturn().getModelAndView(),
+				"delete");
+	}
+
 }
