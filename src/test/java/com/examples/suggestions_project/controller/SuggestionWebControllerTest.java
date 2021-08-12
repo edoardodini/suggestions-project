@@ -190,4 +190,24 @@ public class SuggestionWebControllerTest {
 				"delete");
 	}
 
+	@Test
+	public void testDeleteViewWithSuggestionsToDelete() throws Exception {
+		Long suggestionId = 1L;
+		Suggestion suggestion = new Suggestion(suggestionId, "suggestionText", false);
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+		mvc.perform(get("/suggestions/delete/" + suggestionId)).andExpect(view().name("delete"))
+				.andExpect(model().attribute("suggestion", suggestion)).andExpect(model().attribute("message", ""));
+	}
+
+	@Test
+	public void testDeleteViewWithoutSuggestionToDelete() throws Exception {
+		Long suggestionId = 1L;
+		Suggestion suggestion = null;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+
+		mvc.perform(get("/suggestions/delete/" + suggestionId)).andExpect(view().name("delete"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("message", "No suggestion found with id: " + suggestionId));
+	}
+
 }
