@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.SuggestionService;
@@ -75,4 +77,24 @@ public class SuggestionWebController {
 		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
 		return "delete";
 	}
+	
+	@PostMapping("suggestions/save")
+	public String saveSuggestion(Model model, Suggestion suggestion) {
+		suggestionService.insertNewSuggestion(suggestion);
+		return "redirect:/suggestions";
+	}
+
+	@PostMapping("suggestions/update")
+	public String updateSuggestion(Model model, Suggestion suggestion) throws ResourceNotFoundException{
+		Long id = suggestion.getId();
+		suggestionService.updateSuggestionById(id, suggestion);
+		return "redirect:/suggestions";		
+	}
+
+	@PostMapping("suggestions/remove")
+	public String deleteSuggestion(Suggestion suggestion, Model model) throws ResourceNotFoundException {
+		suggestionService.deleteById(suggestion.getId());
+		return "redirect:/suggestions";
+	}
+	
 }
