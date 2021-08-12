@@ -4,17 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.SuggestionService;
 
 @Controller
 public class SuggestionWebController {
-	
+
 	private static final String SUGGESTIONS_ATTRIBUTE = "suggestions";
 	private static final String HIDDEN_SUGGESTIONS_ATTRIBUTE = "hiddensuggestions";
 	private static final String USER_ATTRIBUTE = "user";
-	
+
 	@Autowired
 	private SuggestionService suggestionService;
 	@Autowired
@@ -33,5 +34,10 @@ public class SuggestionWebController {
 		}
 		model.addAttribute(SUGGESTIONS_ATTRIBUTE, suggestionService.getAllByVisible(true));
 		return "suggestionView";
+	}
+
+	@GetMapping("suggestions/hide/{id}")
+	public String hideSuggestion(@PathVariable long id, Model model) {
+		return "hide";
 	}
 }

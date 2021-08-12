@@ -78,4 +78,23 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("hiddensuggestions", hiddenSuggestions))
 				.andExpect(model().attribute("user", "admin"));
 	}
+	
+	@Test
+	public void testStatus200Hide() throws Exception {
+		mvc.perform(get("/suggestions/hide/1")).andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	public void testReturnHideView() throws Exception {
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/hide/1")).andReturn().getModelAndView(),
+				"hide");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }
