@@ -129,4 +129,15 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("message", "No suggestion found with id: " + suggestionId));
 	}
 
+	@Test
+	public void testStatus200Edit() throws Exception {
+		mvc.perform(get("/suggestions/edit/1")).andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	public void testReturnEditView() throws Exception {
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/edit/1")).andReturn().getModelAndView(),
+				"edit");
+	}
+
 }

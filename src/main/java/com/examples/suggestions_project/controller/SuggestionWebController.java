@@ -49,4 +49,9 @@ public class SuggestionWebController {
 		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
 		return "hide";
 	}
+	
+	@GetMapping("/suggestions/edit/{id}")
+	public String editSuggestion(@PathVariable long id, Model model) {
+		return "edit";
+	}
 }
