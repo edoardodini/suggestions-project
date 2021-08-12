@@ -55,9 +55,9 @@ public class SuggestionWebControllerTest {
 	public void testSuggestionViewShowsSuggestions() throws Exception {
 		List<Suggestion> suggestions = asList(new Suggestion(1L, "suggestionText", true));
 
-		when(suggestionService.getAllSuggestionsByVisible(true)).thenReturn(suggestions);
+		when(suggestionService.getAllByVisible(true)).thenReturn(suggestions);
 
-		mvc.perform(get("/suggestions")).andExpect(view().name("index"))
-				.andExpect(model().attribute("employees", suggestions));
+		mvc.perform(get("/suggestions")).andExpect(view().name("suggestionView"))
+				.andExpect(model().attribute("suggestions", suggestions));
 	}
 }
