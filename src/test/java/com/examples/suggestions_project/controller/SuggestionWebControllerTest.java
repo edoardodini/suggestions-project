@@ -19,6 +19,7 @@ import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.examples.suggestions_project.model.Suggestion;
+import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.SuggestionService;
 
 @RunWith(SpringRunner.class)
@@ -28,7 +29,9 @@ public class SuggestionWebControllerTest {
 	@Autowired
 	private MockMvc mvc;
 	@MockBean
-	SuggestionService suggestionService;
+	private SuggestionService suggestionService;
+	@MockBean
+	private AuthService authService;
 
 	@Test
 	public void testStatus200() throws Exception {
@@ -59,5 +62,20 @@ public class SuggestionWebControllerTest {
 
 		mvc.perform(get("/suggestions")).andExpect(view().name("suggestionView"))
 				.andExpect(model().attribute("suggestions", suggestions));
+	}
+
+	@Test
+	public void testSuggestionViewShowsSuggestionsVisibleAndHiddenWhenAdmin() throws Exception {
+		List<Suggestion> suggestions = asList(new Suggestion(1L, "suggestionText", true));
+		List<Suggestion> hiddenSuggestions = asList(new Suggestion(2L, "hiddenSuggestionText", false));
+
+		when(suggestionService.getAllByVisible(true)).thenReturn(suggestions);
+
+		when(authService.isAdmin()).thenReturn(true);
+
+		mvc.perform(get("/suggestions")).andExpect(view().name("suggestionView"))
+				.andExpect(model().attribute("suggestions", suggestions))
+				.andExpect(model().attribute("hiddensuggestions", hiddenSuggestions))
+				.andExpect(model().attribute("user", "admin"));
 	}
 }
