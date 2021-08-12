@@ -56,7 +56,7 @@ public class SuggestionWebController {
 		Suggestion suggestionById = suggestionService.getSuggestionById(id);
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
 		model.addAttribute(OPERATION_ATTRIBUTE, "update");
-		model.addAttribute(MESSAGE_ATTRIBUTE, "");
+		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
 		return "edit";
 	}
 }
