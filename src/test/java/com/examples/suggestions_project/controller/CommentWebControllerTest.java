@@ -20,9 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.examples.suggestions_project.model.Comment;
 import com.examples.suggestions_project.model.Suggestion;
+import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.CommentService;
 import com.examples.suggestions_project.services.SuggestionService;
-
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = CommentWebController.class)
@@ -34,6 +34,8 @@ public class CommentWebControllerTest {
 	private SuggestionService suggestionService;
 	@MockBean
 	private CommentService commentService;
+	@MockBean
+	private AuthService authService;
 
 	@Test
 	public void testStatus200() throws Exception {
@@ -47,7 +49,7 @@ public class CommentWebControllerTest {
 	}
 
 	@Test
-	public void testSuggestionViewShowsSuggestions() throws Exception {
+	public void testSuggestionViewShowsCommentsToAdmin() throws Exception {
 		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);
 		Comment comment1 = new Comment(1L, "comment1", suggestion);
 		Comment comment2 = new Comment(2L, "comment2", suggestion);
@@ -56,6 +58,8 @@ public class CommentWebControllerTest {
 		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
 		when(commentService.getCommentsBySuggestionId(suggestionId)).thenReturn(asList(comment1, comment2));
 		mvc.perform(get("/suggestions/1/comments")).andExpect(view().name("commentView"))
-				.andExpect(model().attribute("suggestion", suggestion)).andExpect(model().attribute("comments", comments));
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("comments", comments)).andExpect(model().attribute("user", "admin"));
 	}
+
 }
