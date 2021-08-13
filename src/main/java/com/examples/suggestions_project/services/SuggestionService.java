@@ -28,7 +28,7 @@ public class SuggestionService {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public void deleteById(Long suggestionId) {
+	public void deleteById(Long suggestionId) throws ResourceNotFoundException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 

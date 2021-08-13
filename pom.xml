@@ -40,7 +40,7 @@
 		</sonar.coverage.exclusions>
 		<!-- For each rule to be ignore, add another eXX and two corresponding 
 			properties with eXX in the name as below -->
-		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria>e11, e12</sonar.issue.ignore.multicriteria>
 		<!-- "Tests should include assertions" disabled on some classes like *ApplicationTests 
 			which just checks that the Spring application can start, without any assertion -->
 		<sonar.issue.ignore.multicriteria.e11.ruleKey>
@@ -49,6 +49,15 @@
 		<sonar.issue.ignore.multicriteria.e11.resourceKey>
 			**/*ApplicationTests.java
 		</sonar.issue.ignore.multicriteria.e11.resourceKey>
+		<!-- "Similar tests should be grouped in a single Parameterized test" disabled 
+			on "SuggestionWebControllerTest" which contains three similar tests that 
+			are more readable without being parameterized -->
+		<sonar.issue.ignore.multicriteria.e12.ruleKey>
+			java:S5976
+		</sonar.issue.ignore.multicriteria.e12.ruleKey>
+		<sonar.issue.ignore.multicriteria.e12.resourceKey>
+			**/SuggestionWebControllerTest.java
+		</sonar.issue.ignore.multicriteria.e12.resourceKey>
 	</properties>
 
 	<dependencies>

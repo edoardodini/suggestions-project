@@ -119,6 +119,7 @@ public class SuggestionWebControllerTest {
 		verify(suggestion).setVisible(true);
 	}
 
+	//Really similar to other tests, if modified check also the similar ones
 	@Test
 	public void testHideViewWithoutSuggestion() throws Exception {
 		Long suggestionId = 1L;
@@ -152,6 +153,7 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("operation", "update")).andExpect(model().attribute("message", ""));
 	}
 
+	//Really similar to other tests, if modified check also the similar ones
 	@Test
 	public void testEditViewWithoutSuggestionToEdit() throws Exception {
 		Long suggestionId = 1L;
@@ -200,6 +202,7 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("suggestion", suggestion)).andExpect(model().attribute("message", ""));
 	}
 
+	//Really similar to other tests, if modified check also the similar ones
 	@Test
 	public void testDeleteViewWithoutSuggestionToDelete() throws Exception {
 		Long suggestionId = 1L;

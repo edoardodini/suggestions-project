@@ -21,6 +21,8 @@ public class SuggestionWebController {
 	private static final String MESSAGE_ATTRIBUTE = "message";
 	private static final String OPERATION_ATTRIBUTE = "operation";
 	private static final String USER_ATTRIBUTE = "user";
+	private static final String NO_SUGGESTION_WITH_ID_MESSAGE = "No suggestion found with id: ";
+	private static final String REDIRECT_SUGGESTIONS = "redirect:/suggestions";
 
 	@Autowired
 	private SuggestionService suggestionService;
@@ -49,7 +51,7 @@ public class SuggestionWebController {
 			suggestionById.setVisible(!(suggestionById.getVisible()));
 		}
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
-		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
+		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? NO_SUGGESTION_WITH_ID_MESSAGE + id : "");
 		return "hide";
 	}
 
@@ -58,7 +60,7 @@ public class SuggestionWebController {
 		Suggestion suggestionById = suggestionService.getSuggestionById(id);
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
 		model.addAttribute(OPERATION_ATTRIBUTE, "update");
-		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
+		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? NO_SUGGESTION_WITH_ID_MESSAGE + id : "");
 		return "edit";
 	}
 
@@ -69,32 +71,32 @@ public class SuggestionWebController {
 		model.addAttribute(OPERATION_ATTRIBUTE, "new");
 		return "edit";
 	}
-	
+
 	@GetMapping("suggestions/delete/{id}")
 	public String deleteSuggestion(@PathVariable long id, Model model) {
 		Suggestion suggestionById = suggestionService.getSuggestionById(id);
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
-		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? "No suggestion found with id: " + id : "");
+		model.addAttribute(MESSAGE_ATTRIBUTE, suggestionById == null ? NO_SUGGESTION_WITH_ID_MESSAGE + id : "");
 		return "delete";
 	}
-	
+
 	@PostMapping("suggestions/save")
 	public String saveSuggestion(Model model, Suggestion suggestion) {
 		suggestionService.insertNewSuggestion(suggestion);
-		return "redirect:/suggestions";
+		return REDIRECT_SUGGESTIONS;
 	}
 
 	@PostMapping("suggestions/update")
-	public String updateSuggestion(Model model, Suggestion suggestion) throws ResourceNotFoundException{
+	public String updateSuggestion(Model model, Suggestion suggestion) throws ResourceNotFoundException {
 		Long id = suggestion.getId();
 		suggestionService.updateSuggestionById(id, suggestion);
-		return "redirect:/suggestions";		
+		return REDIRECT_SUGGESTIONS;
 	}
 
 	@PostMapping("suggestions/remove")
 	public String deleteSuggestion(Suggestion suggestion, Model model) throws ResourceNotFoundException {
 		suggestionService.deleteById(suggestion.getId());
-		return "redirect:/suggestions";
+		return REDIRECT_SUGGESTIONS;
 	}
-	
+
 }
