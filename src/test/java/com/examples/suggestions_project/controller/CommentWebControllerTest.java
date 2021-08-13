@@ -57,9 +57,24 @@ public class CommentWebControllerTest {
 		Long suggestionId = 1L;
 		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
 		when(commentService.getCommentsBySuggestionId(suggestionId)).thenReturn(asList(comment1, comment2));
+		when(authService.isAdmin()).thenReturn(true);
 		mvc.perform(get("/suggestions/1/comments")).andExpect(view().name("commentView"))
 				.andExpect(model().attribute("suggestion", suggestion))
 				.andExpect(model().attribute("comments", comments)).andExpect(model().attribute("user", "admin"));
 	}
 
+	@Test
+	public void testSuggestionViewShowsCommentsNotToAdmin() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);
+		Comment comment1 = new Comment(1L, "comment1", suggestion);
+		Comment comment2 = new Comment(2L, "comment2", suggestion);
+		List<Comment> comments = asList(comment1, comment2);
+		Long suggestionId = 1L;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+		when(commentService.getCommentsBySuggestionId(suggestionId)).thenReturn(asList(comment1, comment2));
+		when(authService.isAdmin()).thenReturn(false);
+		mvc.perform(get("/suggestions/1/comments")).andExpect(view().name("commentView"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("comments", comments)).andExpect(model().attribute("user", ""));
+	}
 }
