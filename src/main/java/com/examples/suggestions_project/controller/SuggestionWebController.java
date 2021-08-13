@@ -3,9 +3,11 @@ package com.examples.suggestions_project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Suggestion;
@@ -97,6 +99,12 @@ public class SuggestionWebController {
 	public String deleteSuggestion(Suggestion suggestion, Model model) throws ResourceNotFoundException {
 		suggestionService.deleteById(suggestion.getId());
 		return REDIRECT_SUGGESTIONS;
+	}
+	
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public String myRuntimeException(Exception e, RedirectAttributes redirectAttrs) {
+		redirectAttrs.addFlashAttribute(MESSAGE_ATTRIBUTE, e.getMessage());
+		return "redirect:/errorPage";
 	}
 
 }
