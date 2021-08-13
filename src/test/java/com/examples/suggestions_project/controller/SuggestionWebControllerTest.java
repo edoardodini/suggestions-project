@@ -1,11 +1,13 @@
 package com.examples.suggestions_project.controller;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -21,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.SuggestionService;
@@ -119,7 +122,7 @@ public class SuggestionWebControllerTest {
 		verify(suggestion).setVisible(true);
 	}
 
-	//Really similar to other tests, if modified check also the similar ones
+	// Really similar to other tests, if modified check also the similar ones
 	@Test
 	public void testHideViewWithoutSuggestion() throws Exception {
 		Long suggestionId = 1L;
@@ -153,7 +156,7 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("operation", "update")).andExpect(model().attribute("message", ""));
 	}
 
-	//Really similar to other tests, if modified check also the similar ones
+	// Really similar to other tests, if modified check also the similar ones
 	@Test
 	public void testEditViewWithoutSuggestionToEdit() throws Exception {
 		Long suggestionId = 1L;
@@ -202,7 +205,7 @@ public class SuggestionWebControllerTest {
 				.andExpect(model().attribute("suggestion", suggestion)).andExpect(model().attribute("message", ""));
 	}
 
-	//Really similar to other tests, if modified check also the similar ones
+	// Really similar to other tests, if modified check also the similar ones
 	@Test
 	public void testDeleteViewWithoutSuggestionToDelete() throws Exception {
 		Long suggestionId = 1L;
@@ -218,22 +221,46 @@ public class SuggestionWebControllerTest {
 	public void testPostSaveSuggestionShouldInsertNewEmployee() throws Exception {
 		mvc.perform(post("/suggestions/save").param("suggestionText", "suggestion"))
 				.andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
-		Suggestion suggestionToSave=new Suggestion();
+		Suggestion suggestionToSave = new Suggestion();
 		suggestionToSave.setSuggestionText("suggestion");
 		verify(suggestionService).insertNewSuggestion(suggestionToSave);
 	}
 
 	@Test
 	public void testPostUpdateShouldUpdateExistingEmployee() throws Exception {
-		mvc.perform(post("/suggestions/update").param("id", "2").param("suggestionText", "suggestion").param("visible", "true"))
-				.andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
+		mvc.perform(post("/suggestions/update").param("id", "2").param("suggestionText", "suggestion").param("visible",
+				"true")).andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
 		verify(suggestionService).updateSuggestionById(2L, new Suggestion(2L, "suggestion", true));
 	}
-	
+
 	@Test
 	public void testPostDeleteSuggestionShouldInsertNewEmployee() throws Exception {
-		mvc.perform(post("/suggestions/remove").param("id", "1"))
-				.andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
+		mvc.perform(post("/suggestions/remove").param("id", "1")).andExpect(view().name("redirect:/suggestions"));
 		verify(suggestionService).deleteById(1L);
+	}
+
+	@Test
+	public void testPostUpdateThrowsException() throws Exception {
+		Long suggestionId = 1L;
+		String exceptionMessage = "message";
+		Suggestion suggestion = new Suggestion(suggestionId, "suggestion", true);
+		when(suggestionService.updateSuggestionById(suggestionId, suggestion))
+				.thenThrow(new ResourceNotFoundException(exceptionMessage));
+
+		mvc.perform(post("/suggestions/update").param("id", "1").param("suggestionText", "suggestion").param("visible",
+				"true")).andExpect(view().name("redirect:/errorPage"))// go to errorPage page
+				.andExpect(flash().attribute("message", exceptionMessage));
+		verify(suggestionService).updateSuggestionById(suggestionId, new Suggestion(suggestionId, "suggestion", true));
+	}
+
+	@Test
+	public void testPostDeleteThrowsException() throws Exception {
+		Long suggestionId = 1L;
+		String exceptionMessage = "message";
+		doThrow(new ResourceNotFoundException(exceptionMessage)).when(suggestionService).deleteById(suggestionId);
+
+		mvc.perform(post("/suggestions/remove").param("id", "1")).andExpect(view().name("redirect:/errorPage"))
+				.andExpect(flash().attribute("message", exceptionMessage));
+		verify(suggestionService).deleteById(suggestionId);
 	}
 }
