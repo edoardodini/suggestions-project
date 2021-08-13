@@ -220,7 +220,7 @@ public class SuggestionWebControllerTest {
 	@Test
 	public void testPostSaveSuggestionShouldInsertNewEmployee() throws Exception {
 		mvc.perform(post("/suggestions/save").param("suggestionText", "suggestion"))
-				.andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
+				.andExpect(view().name("redirect:/suggestions")).andExpect(status().is3xxRedirection());
 		Suggestion suggestionToSave = new Suggestion();
 		suggestionToSave.setSuggestionText("suggestion");
 		verify(suggestionService).insertNewSuggestion(suggestionToSave);
@@ -229,13 +229,14 @@ public class SuggestionWebControllerTest {
 	@Test
 	public void testPostUpdateShouldUpdateExistingEmployee() throws Exception {
 		mvc.perform(post("/suggestions/update").param("id", "2").param("suggestionText", "suggestion").param("visible",
-				"true")).andExpect(view().name("redirect:/suggestions")); // go back to the suggestions page
+				"true")).andExpect(view().name("redirect:/suggestions")).andExpect(status().is3xxRedirection());
 		verify(suggestionService).updateSuggestionById(2L, new Suggestion(2L, "suggestion", true));
 	}
 
 	@Test
 	public void testPostDeleteSuggestionShouldInsertNewEmployee() throws Exception {
-		mvc.perform(post("/suggestions/remove").param("id", "1")).andExpect(view().name("redirect:/suggestions"));
+		mvc.perform(post("/suggestions/remove").param("id", "1")).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/suggestions")).andExpect(status().is3xxRedirection());
 		verify(suggestionService).deleteById(1L);
 	}
 
@@ -249,7 +250,7 @@ public class SuggestionWebControllerTest {
 
 		mvc.perform(post("/suggestions/update").param("id", "1").param("suggestionText", "suggestion").param("visible",
 				"true")).andExpect(view().name("redirect:/errorPage"))// go to errorPage page
-				.andExpect(flash().attribute("message", exceptionMessage));
+				.andExpect(flash().attribute("message", exceptionMessage)).andExpect(status().is3xxRedirection());
 		verify(suggestionService).updateSuggestionById(suggestionId, new Suggestion(suggestionId, "suggestion", true));
 	}
 
@@ -260,7 +261,7 @@ public class SuggestionWebControllerTest {
 		doThrow(new ResourceNotFoundException(exceptionMessage)).when(suggestionService).deleteById(suggestionId);
 
 		mvc.perform(post("/suggestions/remove").param("id", "1")).andExpect(view().name("redirect:/errorPage"))
-				.andExpect(flash().attribute("message", exceptionMessage));
+				.andExpect(flash().attribute("message", exceptionMessage)).andExpect(status().is3xxRedirection());
 		verify(suggestionService).deleteById(suggestionId);
 	}
 }
