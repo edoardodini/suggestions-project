@@ -20,6 +20,7 @@ public class CommentWebController {
 
 	private static final String SUGGESTION_ATTRIBUTE = "suggestion";
 	private static final String COMMENTS_ATTRIBUTE= "comments";
+	private static final String USER_ATTRIBUTE = "user";
 	@Autowired
 	private CommentService commentService;
 	@Autowired
@@ -31,6 +32,7 @@ public class CommentWebController {
 		List<Comment> commentsBySuggestionId = commentService.getCommentsBySuggestionId(suggestionId);
 		Suggestion suggestionById;
 		suggestionById = suggestionService.getSuggestionById(suggestionId);
+		model.addAttribute(USER_ATTRIBUTE, "admin");
 		model.addAttribute(COMMENTS_ATTRIBUTE, commentsBySuggestionId);
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
 		return "commentView";
