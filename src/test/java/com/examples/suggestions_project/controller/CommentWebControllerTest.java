@@ -167,4 +167,14 @@ public class CommentWebControllerTest {
 				.andExpect(model().attribute("message", "No suggestion found with suggestion id:" + suggestionId));
 	}
 
+	@Test
+	public void testStatus200DeleteComment() throws Exception {
+		mvc.perform(get("/suggestions/1/delete/1")).andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	public void testReturnDeleteCommentView() throws Exception {
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/1/delete/1")).andReturn().getModelAndView(),
+				"deleteComment");
+	}
 }
