@@ -44,7 +44,7 @@ public class CommentWebControllerTest {
 	}
 
 	@Test
-	public void testReturnHomeView() throws Exception {
+	public void testReturnCommentView() throws Exception {
 		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/1/comments")).andReturn().getModelAndView(),
 				"commentView");
 	}
@@ -131,6 +131,22 @@ public class CommentWebControllerTest {
 				.andExpect(model().attribute("suggestion", suggestion))
 				.andExpect(model().attribute("comments", comments)).andExpect(model().attribute("user", "admin"))
 				.andExpect(model().attribute("message", "No comment found with suggestion id: " + suggestionId));
-
 	}
+	
+	@Test
+	public void testStatus200NewComment() throws Exception {
+		mvc.perform(get("/suggestions/1/newComment")).andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	public void testReturnEditCommentView() throws Exception {
+		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/1/newComment")).andReturn().getModelAndView(),
+				"editComment");
+	}
+	
+	
+	
+	
+	
+	
 }
