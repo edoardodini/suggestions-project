@@ -111,7 +111,7 @@ public class CommentWebControllerTest {
 				.andExpect(model().attribute("message", "No suggestion found with suggestion id: " + suggestionId));
 
 	}
-	
+
 	@Test
 	public void testCommentsViewNotShowsCommentsBecauseCommentsNotPresent() throws Exception {
 		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);

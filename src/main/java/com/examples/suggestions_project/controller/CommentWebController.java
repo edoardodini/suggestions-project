@@ -1,5 +1,6 @@
 package com.examples.suggestions_project.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,9 @@ import com.examples.suggestions_project.services.SuggestionService;
 public class CommentWebController {
 
 	private static final String SUGGESTION_ATTRIBUTE = "suggestion";
-	private static final String COMMENTS_ATTRIBUTE= "comments";
+	private static final String COMMENTS_ATTRIBUTE = "comments";
 	private static final String USER_ATTRIBUTE = "user";
+	private static final String MESSAGE_ATTRIBUTE = "message";
 	@Autowired
 	private CommentService commentService;
 	@Autowired
@@ -32,14 +34,21 @@ public class CommentWebController {
 	@GetMapping("/comments")
 	public String home(Model model, @PathVariable Long suggestionId) {
 		List<Comment> commentsBySuggestionId = commentService.getCommentsBySuggestionId(suggestionId);
-		Suggestion suggestionById;
-		suggestionById = suggestionService.getSuggestionById(suggestionId);
-		if (authService.isAdmin()) {
-			model.addAttribute(USER_ATTRIBUTE, "admin");
-		}else {
-			model.addAttribute(USER_ATTRIBUTE, "");
-		}model.addAttribute(COMMENTS_ATTRIBUTE, commentsBySuggestionId);
+		Suggestion suggestionById = suggestionService.getSuggestionById(suggestionId);
+		if (!authService.isAdmin() && suggestionById != null && !suggestionById.getVisible()) {
+			suggestionById = null;
+			commentsBySuggestionId = Collections.emptyList();
+		}
+		model.addAttribute(USER_ATTRIBUTE, authService.isAdmin() ? "admin" : "");
+		model.addAttribute(COMMENTS_ATTRIBUTE, commentsBySuggestionId);
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
+
+		if (suggestionById == null) {
+			model.addAttribute(MESSAGE_ATTRIBUTE, "No suggestion found with suggestion id: " + suggestionId);
+		} else {
+			model.addAttribute(MESSAGE_ATTRIBUTE,
+					commentsBySuggestionId.isEmpty() ? "No comment found with suggestion id: " + suggestionId : "");
+		}
 		return "commentView";
 	}
 
