@@ -62,7 +62,14 @@ public class CommentWebController {
 			model.addAttribute(COMMENT_ATTRIBUTE, newComment);
 		}
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestion);
-		model.addAttribute(MESSAGE_ATTRIBUTE, suggestion == null ? "No suggestion found with suggestion id:" + suggestionId : "");
+		model.addAttribute(MESSAGE_ATTRIBUTE,
+				suggestion == null ? "No suggestion found with suggestion id:" + suggestionId : "");
 		return "editComment";
 	}
+	
+	@GetMapping("/delete/{commentId}")
+	public String deleteSuggestion(@PathVariable long suggestionId, @PathVariable long commentId, Model model) {
+		return "deleteComment";
+	}
+	
 }
