@@ -69,6 +69,11 @@ public class CommentWebController {
 	
 	@GetMapping("/delete/{commentId}")
 	public String deleteSuggestion(@PathVariable long suggestionId, @PathVariable long commentId, Model model) {
+		Suggestion suggestionById = suggestionService.getSuggestionById(suggestionId);
+		Comment comment = commentService.getCommentById(commentId);
+		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
+		model.addAttribute(COMMENT_ATTRIBUTE, comment);
+		model.addAttribute(MESSAGE_ATTRIBUTE,"");
 		return "deleteComment";
 	}
 	

@@ -8,10 +8,14 @@ import com.examples.suggestions_project.model.Comment;
 
 @Service
 public class CommentService {
-	
+
 	private static final String TEMPORARY_IMPLEMENTATION = "Temporary implementation";
 
 	public List<Comment> getCommentsBySuggestionId(Long suggestionId) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
+
+	public Comment getCommentById(long id) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 }
