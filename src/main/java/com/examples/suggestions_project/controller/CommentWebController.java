@@ -24,6 +24,7 @@ public class CommentWebController {
 	private static final String COMMENTS_ATTRIBUTE = "comments";
 	private static final String USER_ATTRIBUTE = "user";
 	private static final String MESSAGE_ATTRIBUTE = "message";
+	private static final String COMMENT_ATTRIBUTE = "comment";
 	@Autowired
 	private CommentService commentService;
 	@Autowired
@@ -54,6 +55,14 @@ public class CommentWebController {
 
 	@GetMapping("/newComment")
 	public String newSuggestion(Model model, @PathVariable long suggestionId) {
+		Suggestion suggestion = suggestionService.getSuggestionById(suggestionId);
+		if (suggestion != null) {
+			Comment newComment = new Comment();
+			newComment.setSuggestion(suggestion);
+			model.addAttribute(COMMENT_ATTRIBUTE, newComment);
+		}
+		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestion);
+		model.addAttribute(MESSAGE_ATTRIBUTE, suggestion == null ? "No suggestion found with suggestion id:" + suggestionId : "");
 		return "editComment";
 	}
 }
