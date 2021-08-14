@@ -35,7 +35,7 @@ public class CommentWebController {
 	public String home(Model model, @PathVariable Long suggestionId) {
 		List<Comment> commentsBySuggestionId = commentService.getCommentsBySuggestionId(suggestionId);
 		Suggestion suggestionById = suggestionService.getSuggestionById(suggestionId);
-		if (!authService.isAdmin() && suggestionById != null && !suggestionById.getVisible()) {
+		if (!authService.isAdmin() && suggestionById != null && Boolean.FALSE.equals(suggestionById.getVisible())) {
 			suggestionById = null;
 			commentsBySuggestionId = Collections.emptyList();
 		}
