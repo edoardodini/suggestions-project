@@ -6,10 +6,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Comment;
@@ -94,6 +96,12 @@ public class CommentWebController {
 	public String deleteSuggestion(Comment comment, @PathVariable long suggestionId) throws ResourceNotFoundException {
 		commentService.deleteById(comment.getCommentId());
 		return "redirect:/suggestions/" + suggestionId + "/comments";
+	}
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public String myRuntimeException(ResourceNotFoundException e, RedirectAttributes redirectAttrs) {
+		redirectAttrs.addFlashAttribute("message", e.getMessage());
+		return "redirect:/errorPage";
 	}
 
 }
