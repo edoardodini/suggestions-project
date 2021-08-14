@@ -1,10 +1,12 @@
 package com.examples.suggestions_project.controller;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -21,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Comment;
 import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.services.AuthService;
@@ -237,4 +240,31 @@ public class CommentWebControllerTest {
 				.andExpect(view().name("redirect:/suggestions/1/comments")).andExpect(status().is3xxRedirection());
 		verify(commentService).deleteById(2L);
 	}
+
+	@Test
+	public void testPostSaveThrowsException() throws Exception {
+		String exceptionMessage = "message";
+		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
+		Comment comment = new Comment(2L, "comment", suggestion);
+		when(commentService.insertNewComment(comment)).thenThrow(new ResourceNotFoundException(exceptionMessage));
+		mvc.perform(post("/suggestions/1/save").param("commentId", "2").param("commentText", "comment")
+				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
+				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/errorPage"))// go to errorPage
+				.andExpect(flash().attribute("message", exceptionMessage)).andExpect(status().is3xxRedirection());
+		verify(commentService).insertNewComment(comment);
+	}
+
+	@Test
+	public void testPostDeleteThrowsException() throws Exception {
+		Long commentId = 2L;
+		String exceptionMessage = "message";
+		doThrow(new ResourceNotFoundException(exceptionMessage)).when(commentService).deleteById(commentId);
+
+		mvc.perform(post("/suggestions/1/removeComment").param("commentId", "2").param("commentText", "comment")
+				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
+				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/errorPage"))
+				.andExpect(flash().attribute("message", exceptionMessage)).andExpect(status().is3xxRedirection());
+		verify(commentService).deleteById(commentId);
+	}
+
 }
