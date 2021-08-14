@@ -132,7 +132,7 @@ public class CommentWebControllerTest {
 				.andExpect(model().attribute("comments", comments)).andExpect(model().attribute("user", "admin"))
 				.andExpect(model().attribute("message", "No comment found with suggestion id: " + suggestionId));
 	}
-	
+
 	@Test
 	public void testStatus200NewComment() throws Exception {
 		mvc.perform(get("/suggestions/1/newComment")).andExpect(status().is2xxSuccessful());
@@ -143,10 +143,28 @@ public class CommentWebControllerTest {
 		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/1/newComment")).andReturn().getModelAndView(),
 				"editComment");
 	}
-	
-	
-	
-	
-	
-	
+
+	@Test
+	public void testNewCommentViewWhenSuggestionExist() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);
+		Comment newComment = new Comment();
+		newComment.setSuggestion(suggestion);
+		Long suggestionId = 1L;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+		mvc.perform(get("/suggestions/1/newComment")).andExpect(view().name("editComment"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("comment", newComment)).andExpect(model().attribute("message", ""));
+	}
+
+	@Test
+	public void testNewCommentViewWhenSuggestionNotExist() throws Exception {
+		Suggestion notExistingSuggestion = null;
+		Long suggestionId = 1L;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(notExistingSuggestion);
+		mvc.perform(get("/suggestions/1/newComment")).andExpect(view().name("editComment"))
+				.andExpect(model().attribute("suggestion", notExistingSuggestion))
+				.andExpect(model().attributeDoesNotExist("comment"))
+				.andExpect(model().attribute("message", "No suggestion found with suggestion id:" + suggestionId));
+	}
+
 }

@@ -14,6 +14,10 @@ public class Comment {
 		this.suggestion = suggestion;
 	}
 
+	public Comment() {
+		// 
+	}
+
 	public Long getCommentId() {
 		return commentId;
 	}
