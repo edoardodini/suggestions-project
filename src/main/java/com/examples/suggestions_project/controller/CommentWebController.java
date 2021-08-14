@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Comment;
 import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.services.AuthService;
@@ -80,6 +82,18 @@ public class CommentWebController {
 					comment == null ? "No comment found with comment id: " + commentId : "");
 		}
 		return "deleteComment";
+	}
+
+	@PostMapping("/save")
+	public String saveComment(Comment comment, @PathVariable long suggestionId) throws ResourceNotFoundException {
+		commentService.insertNewComment(comment);
+		return "redirect:/suggestions/" + suggestionId + "/comments";
+	}
+
+	@PostMapping("/removeComment")
+	public String deleteSuggestion(Comment comment, @PathVariable long suggestionId) throws ResourceNotFoundException {
+		commentService.deleteById(comment.getCommentId());
+		return "redirect:/suggestions/" + suggestionId + "/comments";
 	}
 
 }

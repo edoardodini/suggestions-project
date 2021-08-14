@@ -19,12 +19,12 @@ public class CommentService {
 	public Comment getCommentById(long id) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
-	
+
 	public Comment insertNewComment(Comment comment) throws ResourceNotFoundException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public void deleteById(Long commentId) throws ResourceNotFoundException{
+	public void deleteById(Long commentId) throws ResourceNotFoundException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 }
