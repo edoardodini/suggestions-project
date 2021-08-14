@@ -73,8 +73,12 @@ public class CommentWebController {
 		Comment comment = commentService.getCommentById(commentId);
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
 		model.addAttribute(COMMENT_ATTRIBUTE, comment);
-		model.addAttribute(MESSAGE_ATTRIBUTE,
-				comment == null ? "No comment found with suggestion id: " + commentId : "");
+		if (suggestionById == null) {
+			model.addAttribute(MESSAGE_ATTRIBUTE, "No suggestion found with suggestion id: " + suggestionId);
+		} else {
+			model.addAttribute(MESSAGE_ATTRIBUTE,
+					comment == null ? "No comment found with comment id: " + commentId : "");
+		}
 		return "deleteComment";
 	}
 
