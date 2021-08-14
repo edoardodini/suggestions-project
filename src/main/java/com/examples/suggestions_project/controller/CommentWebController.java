@@ -66,15 +66,16 @@ public class CommentWebController {
 				suggestion == null ? "No suggestion found with suggestion id:" + suggestionId : "");
 		return "editComment";
 	}
-	
+
 	@GetMapping("/delete/{commentId}")
 	public String deleteSuggestion(@PathVariable long suggestionId, @PathVariable long commentId, Model model) {
 		Suggestion suggestionById = suggestionService.getSuggestionById(suggestionId);
 		Comment comment = commentService.getCommentById(commentId);
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
 		model.addAttribute(COMMENT_ATTRIBUTE, comment);
-		model.addAttribute(MESSAGE_ATTRIBUTE,"");
+		model.addAttribute(MESSAGE_ATTRIBUTE,
+				comment == null ? "No comment found with suggestion id: " + commentId : "");
 		return "deleteComment";
 	}
-	
+
 }
