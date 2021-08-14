@@ -100,7 +100,7 @@ public class CommentWebController {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public String myRuntimeException(ResourceNotFoundException e, RedirectAttributes redirectAttrs) {
-		redirectAttrs.addFlashAttribute("message", e.getMessage());
+		redirectAttrs.addFlashAttribute(MESSAGE_ATTRIBUTE, e.getMessage());
 		return "redirect:/errorPage";
 	}
 
