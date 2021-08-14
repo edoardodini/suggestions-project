@@ -52,4 +52,8 @@ public class CommentWebController {
 		return "commentView";
 	}
 
+	@GetMapping("/newComment")
+	public String newSuggestion(Model model, @PathVariable long suggestionId) {
+		return "editComment";
+	}
 }
