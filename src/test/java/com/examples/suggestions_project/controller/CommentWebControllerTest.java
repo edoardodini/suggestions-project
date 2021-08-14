@@ -1,8 +1,10 @@
 package com.examples.suggestions_project.controller;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -204,7 +206,7 @@ public class CommentWebControllerTest {
 				.andExpect(model().attribute("comment", notExistingComment))
 				.andExpect(model().attribute("message", "No comment found with comment id: " + commentId));
 	}
-	
+
 	@Test
 	public void testDeleteCommentViewWhenSuggestionAndCommentNotExist() throws Exception {
 		Suggestion notExistingSuggestion = null;
@@ -217,5 +219,22 @@ public class CommentWebControllerTest {
 				.andExpect(model().attribute("suggestion", notExistingSuggestion))
 				.andExpect(model().attribute("comment", notExistingComment))
 				.andExpect(model().attribute("message", "No suggestion found with suggestion id: " + suggestionId));
+	}
+
+	@Test
+	public void testPostSaveShouldSaveExistingEmployee() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
+		mvc.perform(post("/suggestions/1/save").param("commentId", "1").param("commentText", "comment")
+				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
+				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/suggestions/1/comments"))
+				.andExpect(status().is3xxRedirection());
+		verify(commentService).insertNewComment(new Comment(1L, "comment", suggestion));
+	}
+
+	@Test
+	public void testPostDeleteShouldDeleteExistingEmployee() throws Exception {
+		mvc.perform(post("/suggestions/1/removeComment").param("commentId", "2"))
+				.andExpect(view().name("redirect:/suggestions/1/comments")).andExpect(status().is3xxRedirection());
+		verify(commentService).deleteById(2L);
 	}
 }
