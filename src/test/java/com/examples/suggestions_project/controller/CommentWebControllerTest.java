@@ -177,4 +177,17 @@ public class CommentWebControllerTest {
 		ModelAndViewAssert.assertViewName(mvc.perform(get("/suggestions/1/delete/1")).andReturn().getModelAndView(),
 				"deleteComment");
 	}
+	
+	@Test
+	public void testDeleteCommentViewWhenSuggestionAndCommentExist() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);
+		Comment comment = new Comment(2L, "comment", suggestion);
+		Long suggestionId = 1L;
+		Long commentId= 2L;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+		when(commentService.getCommentById(commentId)).thenReturn(comment);
+		mvc.perform(get("/suggestions/1/delete/2")).andExpect(view().name("deleteComment"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("comment", comment)).andExpect(model().attribute("message", ""));
+	}
 }
