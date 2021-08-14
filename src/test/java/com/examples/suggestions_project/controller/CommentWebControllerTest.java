@@ -202,6 +202,20 @@ public class CommentWebControllerTest {
 		mvc.perform(get("/suggestions/1/delete/2")).andExpect(view().name("deleteComment"))
 				.andExpect(model().attribute("suggestion", suggestion))
 				.andExpect(model().attribute("comment", notExistingComment))
-				.andExpect(model().attribute("message", "No comment found with suggestion id: " + commentId));
+				.andExpect(model().attribute("message", "No comment found with comment id: " + commentId));
+	}
+	
+	@Test
+	public void testDeleteCommentViewWhenSuggestionAndCommentNotExist() throws Exception {
+		Suggestion notExistingSuggestion = null;
+		Comment notExistingComment = null;
+		Long suggestionId = 1L;
+		Long commentId = 2L;
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(notExistingSuggestion);
+		when(commentService.getCommentById(commentId)).thenReturn(notExistingComment);
+		mvc.perform(get("/suggestions/1/delete/2")).andExpect(view().name("deleteComment"))
+				.andExpect(model().attribute("suggestion", notExistingSuggestion))
+				.andExpect(model().attribute("comment", notExistingComment))
+				.andExpect(model().attribute("message", "No suggestion found with suggestion id: " + suggestionId));
 	}
 }
