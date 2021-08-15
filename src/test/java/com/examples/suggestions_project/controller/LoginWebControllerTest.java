@@ -37,4 +37,18 @@ public class LoginWebControllerTest {
 		ModelAndViewAssert.assertViewName(mvc.perform(get("/login")).andReturn().getModelAndView(), "login");
 	}
 
+	@Test
+	public void testLoginWithoutUserAttribute() throws Exception {
+		when(authService.isAdmin()).thenReturn(false);
+		mvc.perform(get("/login")).andExpect(view().name("login"))
+				.andExpect(model().attributeDoesNotExist("user"));
+		verify(authService).isAdmin();
+	}
+
+	@Test
+	public void testLoginWithUserAttribute() throws Exception {
+		when(authService.isAdmin()).thenReturn(true);
+		mvc.perform(get("/login")).andExpect(view().name("login")).andExpect(model().attribute("user", "admin"));
+		verify(authService).isAdmin();
+	}
 }
