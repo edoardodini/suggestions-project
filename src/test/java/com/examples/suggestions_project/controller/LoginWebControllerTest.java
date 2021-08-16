@@ -40,8 +40,7 @@ public class LoginWebControllerTest {
 	@Test
 	public void testLoginWithoutUserAttribute() throws Exception {
 		when(authService.isAdmin()).thenReturn(false);
-		mvc.perform(get("/login")).andExpect(view().name("login"))
-				.andExpect(model().attributeDoesNotExist("user"));
+		mvc.perform(get("/login")).andExpect(view().name("login")).andExpect(model().attributeDoesNotExist("user"));
 		verify(authService).isAdmin();
 	}
 
