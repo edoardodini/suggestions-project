@@ -36,7 +36,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Admin section")
 				.containsOnlyOnce("Click here to login as admin.").containsOnlyOnce("Click here to login as admin.")
 				.containsOnlyOnce("User section").containsOnlyOnce("Click here to go in suggestions section");
-		assertThat(page.getAnchorByName("admin").getHrefAttribute()).isEqualTo("/login");
-		assertThat(page.getAnchorByName("suggestions").getHrefAttribute()).isEqualTo("/suggestions");
+		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/login");
+		assertThat(page.getAnchors().get(1).getHrefAttribute()).isEqualTo("/suggestions");
 	}
 }
