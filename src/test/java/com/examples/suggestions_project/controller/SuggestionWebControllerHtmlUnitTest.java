@@ -80,7 +80,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("New suggestion")
 				.containsOnlyOnce("Logged as generic user").doesNotContain("No suggestions");
 		HtmlTable table = page.getHtmlElementById("suggestions_table");
-		assertThat(table.asText())
+		assertThat(removeWindowsCR(table.asText()))
 				.isEqualTo(	"Suggestions\n" + 
 							"ID	Suggestion\n" + 
 							"1	suggestion1	Comments\n" + 
@@ -91,6 +91,10 @@ public class SuggestionWebControllerHtmlUnitTest {
 		verify(authService).isAdmin();
 		verifyNoMoreInteractions(suggestionService);
 		verifyNoMoreInteractions(authService);
+	}
+	
+	private String removeWindowsCR(String s) {
+		return s.replace("\r", "");
 	}
 
 }
