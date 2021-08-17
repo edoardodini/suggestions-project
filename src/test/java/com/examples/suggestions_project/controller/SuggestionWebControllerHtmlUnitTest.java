@@ -301,7 +301,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		verify(suggestionService).getSuggestionById(1L);
 		verifyNoMoreInteractions(suggestionService);
 	}
-	
+
 	@Test
 	public void testEditSuggestion() throws Exception {
 		String oldSuggestion = "old suggestion";
@@ -312,7 +312,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		form.getButtonByName("btn_submit").click();
 		verify(suggestionService).updateSuggestionById(1L, new Suggestion(1L, "modified suggestion", true));
 	}
-	
+
 	@Test
 	public void testNewPageTitle() throws Exception {
 		HtmlPage page = webClient.getPage("/suggestions/new");
@@ -327,10 +327,10 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 		HtmlForm form = page.getFormByName("new_form");
 		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Save");
-		assertThat(form.getInputByName("suggestionText").asText()).isEqualTo("");
+		assertThat(form.getInputByName("suggestionText").asText()).isEmpty();
 		verifyNoMoreInteractions(suggestionService);
 	}
-	
+
 	@Test
 	public void testCreateSuggestion() throws Exception {
 		HtmlPage page = this.webClient.getPage("/suggestions/new");
@@ -341,7 +341,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		suggestionCreated.setSuggestionText("new suggestion");
 		verify(suggestionService).insertNewSuggestion(suggestionCreated);
 	}
-	
+
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
 	}
