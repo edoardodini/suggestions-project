@@ -218,7 +218,7 @@ public class SuggestionWebControllerTest {
 	}
 
 	@Test
-	public void testPostSaveSuggestionShouldInsertNewEmployee() throws Exception {
+	public void testPostSaveSuggestionShouldInsertNewSuggestion() throws Exception {
 		mvc.perform(post("/suggestions/save").param("suggestionText", "suggestion"))
 				.andExpect(view().name("redirect:/suggestions")).andExpect(status().is3xxRedirection());
 		Suggestion suggestionToSave = new Suggestion();
@@ -227,14 +227,14 @@ public class SuggestionWebControllerTest {
 	}
 
 	@Test
-	public void testPostUpdateShouldUpdateExistingEmployee() throws Exception {
+	public void testPostUpdateShouldUpdateExistingSuggestion() throws Exception {
 		mvc.perform(post("/suggestions/update").param("id", "2").param("suggestionText", "suggestion").param("visible",
 				"true")).andExpect(view().name("redirect:/suggestions")).andExpect(status().is3xxRedirection());
 		verify(suggestionService).updateSuggestionById(2L, new Suggestion(2L, "suggestion", true));
 	}
 
 	@Test
-	public void testPostDeleteSuggestionShouldInsertNewEmployee() throws Exception {
+	public void testPostDeleteSuggestionShouldDeleteTheSuggestion() throws Exception {
 		mvc.perform(post("/suggestions/remove").param("id", "1")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/suggestions")).andExpect(status().is3xxRedirection());
 		verify(suggestionService).deleteById(1L);
