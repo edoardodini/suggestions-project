@@ -312,7 +312,36 @@ public class SuggestionWebControllerHtmlUnitTest {
 		form.getButtonByName("btn_submit").click();
 		verify(suggestionService).updateSuggestionById(1L, new Suggestion(1L, "modified suggestion", true));
 	}
+	
+	@Test
+	public void testNewPageTitle() throws Exception {
+		HtmlPage page = webClient.getPage("/suggestions/new");
+		assertThat(page.getTitleText()).isEqualTo("Edit suggestion");
+	}
 
+	@Test
+	public void testNewSuggestionPage() throws Exception {
+		HtmlPage page = this.webClient.getPage("/suggestions/new");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit suggestion")
+				.containsOnlyOnce("Suggestion: ").containsOnlyOnce("Save");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+		HtmlForm form = page.getFormByName("new_form");
+		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Save");
+		assertThat(form.getInputByName("suggestionText").asText()).isEqualTo("");
+		verifyNoMoreInteractions(suggestionService);
+	}
+	
+	@Test
+	public void testCreateSuggestion() throws Exception {
+		HtmlPage page = this.webClient.getPage("/suggestions/new");
+		final HtmlForm form = page.getFormByName("new_form");
+		form.getInputByName("suggestionText").setValueAttribute("new suggestion");
+		form.getButtonByName("btn_submit").click();
+		Suggestion suggestionCreated = new Suggestion();
+		suggestionCreated.setSuggestionText("new suggestion");
+		verify(suggestionService).insertNewSuggestion(suggestionCreated);
+	}
+	
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
 	}
