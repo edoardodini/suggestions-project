@@ -342,6 +342,46 @@ public class SuggestionWebControllerHtmlUnitTest {
 		verify(suggestionService).insertNewSuggestion(suggestionCreated);
 	}
 
+	//
+	@Test
+	public void testDeletePageTitle() throws Exception {
+		HtmlPage page = webClient.getPage("/suggestions/delete/1");
+		assertThat(page.getTitleText()).isEqualTo("Delete suggestion");
+	}
+
+	@Test
+	public void testDeletePageWhenNoSuggestionWithSelectedId() throws Exception {
+		HtmlPage page = this.webClient.getPage("/suggestions/delete/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Delete suggestion")
+				.containsOnlyOnce("No suggestion found with id: 1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+
+	@Test
+	public void testDeletePageWhenSuggestionWithSelectedIdExists() throws Exception {
+		Suggestion suggestionToDelete = new Suggestion(1L, "suggestion", true);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestionToDelete);
+		HtmlPage page = this.webClient.getPage("/suggestions/delete/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Delete suggestion")
+				.containsOnlyOnce("Want to delete?").containsOnlyOnce("Yes");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+		HtmlForm form = page.getFormByName("delete_form");
+		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Yes");
+		verify(suggestionService).getSuggestionById(1L);
+		verifyNoMoreInteractions(suggestionService);
+	}
+
+	@Test
+	public void testDeleteSuggestion() throws Exception {
+		String oldSuggestion = "old suggestion";
+		when(suggestionService.getSuggestionById(1L)).thenReturn(new Suggestion(1L, oldSuggestion, true));
+		HtmlPage page = this.webClient.getPage("/suggestions/delete/1");
+		final HtmlForm form = page.getFormByName("delete_form");
+		form.getButtonByName("btn_submit").click();
+		verify(suggestionService).getSuggestionById(1L);
+		verify(suggestionService).deleteById(1L);
+	}
+
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
 	}
