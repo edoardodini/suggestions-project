@@ -1,6 +1,7 @@
 package com.examples.suggestions_project.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -221,6 +222,54 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Hide/Show suggestion")
 				.containsOnlyOnce("No suggestion found with id: 1");
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+	
+	@Test
+	public void testHidePageWhenSuggestionWithSelectedIdToHide() throws Exception {
+		Suggestion suggestion = spy(new Suggestion(1L, "suggestion1", true));
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
+		HtmlPage page = this.webClient.getPage("/suggestions/hide/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Hide/Show suggestion")
+				.containsOnlyOnce("Want to hide?").containsOnlyOnce("Yes");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+		HtmlForm form = page.getFormByName("hideshow_form");
+		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Yes");
+		verify(suggestionService).getSuggestionById(1L);
+		verifyNoMoreInteractions(suggestionService);
+		verify(suggestion).setVisible(false);
+	}
+
+	@Test
+	public void testHidePageWhenSuggestionWithSelectedIdToShow() throws Exception {
+		Suggestion suggestion = spy(new Suggestion(1L, "suggestion1", false));
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
+		HtmlPage page = this.webClient.getPage("/suggestions/hide/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Hide/Show suggestion")
+				.containsOnlyOnce("Want to show?").containsOnlyOnce("Yes");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+		HtmlForm form = page.getFormByName("hideshow_form");
+		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Yes");
+		verify(suggestionService).getSuggestionById(1L);
+		verifyNoMoreInteractions(suggestionService);
+		verify(suggestion).setVisible(true);
+	}
+
+	@Test
+	public void testHideSuggestion() throws Exception {
+		when(suggestionService.getSuggestionById(1L)).thenReturn(new Suggestion(1L, "suggestionToHide", true));
+		HtmlPage page = this.webClient.getPage("/suggestions/hide/1");
+		final HtmlForm form = page.getFormByName("hideshow_form");
+		form.getButtonByName("btn_submit").click();
+		verify(suggestionService).updateSuggestionById(1L, new Suggestion(1L, "suggestionToHide", false));
+	}
+
+	@Test
+	public void testShowSuggestion() throws Exception {
+		when(suggestionService.getSuggestionById(1L)).thenReturn(new Suggestion(1L, "suggestionToShow", false));
+		HtmlPage page = this.webClient.getPage("/suggestions/hide/1");
+		final HtmlForm form = page.getFormByName("hideshow_form");
+		form.getButtonByName("btn_submit").click();
+		verify(suggestionService).updateSuggestionById(1L, new Suggestion(1L, "suggestionToShow", true));
 	}
 
 	private String removeWindowsCR(String s) {
