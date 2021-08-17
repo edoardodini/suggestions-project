@@ -272,6 +272,21 @@ public class SuggestionWebControllerHtmlUnitTest {
 		verify(suggestionService).updateSuggestionById(1L, new Suggestion(1L, "suggestionToShow", true));
 	}
 
+	
+	@Test
+	public void testEditPageTitle() throws Exception {
+		HtmlPage page = webClient.getPage("/suggestions/edit/1");
+		assertThat(page.getTitleText()).isEqualTo("Edit suggestion");
+	}
+
+	@Test
+	public void testEditPageWhenNoSuggestionWithSelectedId() throws Exception {
+		HtmlPage page = this.webClient.getPage("/suggestions/edit/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit suggestion")
+				.containsOnlyOnce("No suggestion found with id: 1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+	
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
 	}
