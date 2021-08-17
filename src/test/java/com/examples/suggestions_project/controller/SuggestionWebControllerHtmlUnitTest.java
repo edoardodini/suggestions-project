@@ -209,6 +209,20 @@ public class SuggestionWebControllerHtmlUnitTest {
 		verifyNoMoreInteractions(authService);
 	}
 
+	@Test
+	public void testHidePageTitle() throws Exception {
+		HtmlPage page = webClient.getPage("/suggestions/hide/1");
+		assertThat(page.getTitleText()).isEqualTo("Hide/Show suggestion");
+	}
+
+	@Test
+	public void testHidePageWhenNoSuggestionWithSelectedId() throws Exception {
+		HtmlPage page = this.webClient.getPage("/suggestions/hide/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Hide/Show suggestion")
+				.containsOnlyOnce("No suggestion found with id: 1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
 	}
