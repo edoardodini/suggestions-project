@@ -216,6 +216,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getTitleText()).isEqualTo("Hide/Show suggestion");
 	}
 
+	// this test is similar to other two. If modified check also the others
 	@Test
 	public void testHidePageWhenNoSuggestionWithSelectedId() throws Exception {
 		HtmlPage page = this.webClient.getPage("/suggestions/hide/1");
@@ -278,6 +279,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getTitleText()).isEqualTo("Edit suggestion");
 	}
 
+	// this test is similar to other two. If modified check also the others
 	@Test
 	public void testEditPageWhenNoSuggestionWithSelectedId() throws Exception {
 		HtmlPage page = this.webClient.getPage("/suggestions/edit/1");
@@ -349,6 +351,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getTitleText()).isEqualTo("Delete suggestion");
 	}
 
+	// this test is similar to other two. If modified check also the others
 	@Test
 	public void testDeletePageWhenNoSuggestionWithSelectedId() throws Exception {
 		HtmlPage page = this.webClient.getPage("/suggestions/delete/1");

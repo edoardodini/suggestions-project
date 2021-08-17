@@ -34,8 +34,7 @@ public class ExceptionWebControllerHtmlUnitTest {
 		String stringToBeFound = "oddString_oddString_oddString_oddString";
 		String result = this.mvc.perform(get("/errorPage").flashAttr("message", stringToBeFound)).andReturn()
 				.getResponse().getContentAsString();
-		assertThat(result).containsOnlyOnce("Home");
-		assertThat(result).containsOnlyOnce(stringToBeFound);
+		assertThat(result).containsOnlyOnce("Home").containsOnlyOnce(stringToBeFound);
 	}
 
 }
