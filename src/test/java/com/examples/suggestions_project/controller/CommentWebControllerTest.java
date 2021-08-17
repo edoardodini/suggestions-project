@@ -225,7 +225,7 @@ public class CommentWebControllerTest {
 	}
 
 	@Test
-	public void testPostSaveShouldSaveExistingEmployee() throws Exception {
+	public void testPostSaveShouldSaveExistingComment() throws Exception {
 		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
 		mvc.perform(post("/suggestions/1/save").param("commentId", "1").param("commentText", "comment")
 				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
@@ -235,7 +235,7 @@ public class CommentWebControllerTest {
 	}
 
 	@Test
-	public void testPostDeleteShouldDeleteExistingEmployee() throws Exception {
+	public void testPostDeleteShouldDeleteExistingComment() throws Exception {
 		mvc.perform(post("/suggestions/1/removeComment").param("commentId", "2"))
 				.andExpect(view().name("redirect:/suggestions/1/comments")).andExpect(status().is3xxRedirection());
 		verify(commentService).deleteById(2L);
