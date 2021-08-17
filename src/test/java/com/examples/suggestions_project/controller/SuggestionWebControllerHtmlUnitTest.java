@@ -223,7 +223,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 				.containsOnlyOnce("No suggestion found with id: 1");
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 	}
-	
+
 	@Test
 	public void testHidePageWhenSuggestionWithSelectedIdToHide() throws Exception {
 		Suggestion suggestion = spy(new Suggestion(1L, "suggestion1", true));
@@ -272,7 +272,6 @@ public class SuggestionWebControllerHtmlUnitTest {
 		verify(suggestionService).updateSuggestionById(1L, new Suggestion(1L, "suggestionToShow", true));
 	}
 
-	
 	@Test
 	public void testEditPageTitle() throws Exception {
 		HtmlPage page = webClient.getPage("/suggestions/edit/1");
@@ -286,7 +285,34 @@ public class SuggestionWebControllerHtmlUnitTest {
 				.containsOnlyOnce("No suggestion found with id: 1");
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 	}
+
+	@Test
+	public void testEditPageWhenSuggestionWithSelectedIdExists() throws Exception {
+		String oldSuggestion = "old suggestion";
+		Suggestion suggestionToEdit = new Suggestion(1L, oldSuggestion, true);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestionToEdit);
+		HtmlPage page = this.webClient.getPage("/suggestions/edit/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit suggestion")
+				.containsOnlyOnce("Suggestion: ").containsOnlyOnce("Update");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+		HtmlForm form = page.getFormByName("update_form");
+		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Update");
+		assertThat(form.getInputByValue(oldSuggestion).asText()).isEqualTo(oldSuggestion);
+		verify(suggestionService).getSuggestionById(1L);
+		verifyNoMoreInteractions(suggestionService);
+	}
 	
+	@Test
+	public void testEditSuggestion() throws Exception {
+		String oldSuggestion = "old suggestion";
+		when(suggestionService.getSuggestionById(1L)).thenReturn(new Suggestion(1L, oldSuggestion, true));
+		HtmlPage page = this.webClient.getPage("/suggestions/edit/1");
+		final HtmlForm form = page.getFormByName("update_form");
+		form.getInputByValue(oldSuggestion).setValueAttribute("modified suggestion");
+		form.getButtonByName("btn_submit").click();
+		verify(suggestionService).updateSuggestionById(1L, new Suggestion(1L, "modified suggestion", true));
+	}
+
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
 	}
