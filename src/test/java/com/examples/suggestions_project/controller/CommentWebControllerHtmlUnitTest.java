@@ -124,6 +124,27 @@ public class CommentWebControllerHtmlUnitTest {
 				.isEqualTo("Comments\n" + "ID	Comment\n" + "1	comment1	Delete\n" + "2	comment2	Delete");
 	}
 
+	@Test
+	public void testNewCommentPageTitle() throws Exception {
+		HtmlPage page = webClient.getPage("/suggestions/1/newComment");
+		assertThat(page.getTitleText()).isEqualTo("Edit comment");
+	}
+
+	@Test
+	public void testNewCommentsPageLinkPresent() throws Exception {
+		HtmlPage page = this.webClient.getPage("/suggestions/1/newComment");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+
+	@Test
+	public void testNewCommentPageWhenNoSuggestion() throws Exception {
+		Suggestion noSuggestion = null;
+		when(suggestionService.getSuggestionById(1L)).thenReturn(noSuggestion);
+		HtmlPage page = this.webClient.getPage("/suggestions/1/newComment");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit comment")
+				.containsOnlyOnce("No suggestion found with suggestion id: 1");
+	}
+
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
 	}
