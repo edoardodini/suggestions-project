@@ -1,6 +1,7 @@
 package com.examples.suggestions_project.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import static java.util.Arrays.asList;
@@ -19,6 +20,7 @@ import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.CommentService;
 import com.examples.suggestions_project.services.SuggestionService;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 
@@ -143,6 +145,32 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/suggestions/1/newComment");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit comment")
 				.containsOnlyOnce("No suggestion found with suggestion id: 1");
+	}
+	
+	@Test
+	public void testNewCommentPage() throws Exception {
+		Suggestion suggestion = new Suggestion(1L,"suggestion",true);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
+		HtmlPage page = this.webClient.getPage("/suggestions/1/newComment");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit comment")
+				.containsOnlyOnce("Comment: ").containsOnlyOnce("Save");
+		HtmlForm form = page.getFormByName("newComment_form");
+		assertThat(form.getButtonByName("btn_save").getTextContent()).isEqualTo("Save");
+		assertThat(form.getInputByName("commentText").asText()).isEmpty();
+	}
+	
+	@Test
+	public void testCreateSuggestion() throws Exception {
+		Suggestion suggestion = new Suggestion(1L,"suggestion",true);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
+		HtmlPage page = this.webClient.getPage("/suggestions/1/newComment");
+		final HtmlForm form = page.getFormByName("newComment_form");
+		form.getInputByName("commentText").setValueAttribute("comment");
+		Comment commentCreated = new Comment();
+		commentCreated.setCommentText("comment");
+		commentCreated.setSuggestion(suggestion);
+		form.getButtonByName("btn_save").click();
+		verify(commentService).insertNewComment(commentCreated);
 	}
 
 	private String removeWindowsCR(String s) {
