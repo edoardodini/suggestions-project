@@ -24,6 +24,8 @@ import com.examples.suggestions_project.services.SuggestionService;
 @RequestMapping("suggestions/{suggestionId}")
 public class CommentWebController {
 
+	private static final String NO_COMMENT_FOUND_WITH_SUGGESTION_ID = "No comment found with suggestion id: ";
+	private static final String NO_SUGGESTION_FOUND_WITH_SUGGESTION_ID = "No suggestion found with suggestion id: ";
 	private static final String SUGGESTION_ATTRIBUTE = "suggestion";
 	private static final String COMMENTS_ATTRIBUTE = "comments";
 	private static final String USER_ATTRIBUTE = "user";
@@ -49,10 +51,10 @@ public class CommentWebController {
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
 
 		if (suggestionById == null) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, "No suggestion found with suggestion id: " + suggestionId);
+			model.addAttribute(MESSAGE_ATTRIBUTE, NO_SUGGESTION_FOUND_WITH_SUGGESTION_ID + suggestionId);
 		} else {
 			model.addAttribute(MESSAGE_ATTRIBUTE,
-					commentsBySuggestionId.isEmpty() ? "No comment found with suggestion id: " + suggestionId : "");
+					commentsBySuggestionId.isEmpty() ? NO_COMMENT_FOUND_WITH_SUGGESTION_ID + suggestionId : "");
 		}
 		return "commentView";
 	}
@@ -67,7 +69,7 @@ public class CommentWebController {
 		}
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestion);
 		model.addAttribute(MESSAGE_ATTRIBUTE,
-				suggestion == null ? "No suggestion found with suggestion id: " + suggestionId : "");
+				suggestion == null ? NO_SUGGESTION_FOUND_WITH_SUGGESTION_ID + suggestionId : "");
 		return "editComment";
 	}
 
@@ -78,7 +80,7 @@ public class CommentWebController {
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestionById);
 		model.addAttribute(COMMENT_ATTRIBUTE, comment);
 		if (suggestionById == null) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, "No suggestion found with suggestion id: " + suggestionId);
+			model.addAttribute(MESSAGE_ATTRIBUTE, NO_SUGGESTION_FOUND_WITH_SUGGESTION_ID + suggestionId);
 		} else {
 			model.addAttribute(MESSAGE_ATTRIBUTE,
 					comment == null ? "No comment found with comment id: " + commentId : "");
