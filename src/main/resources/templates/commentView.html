@@ -27,6 +27,32 @@
 		<p>Logged as generic user</p>
 		<p> </p>
 	</div>
+	<div th:unless="${message.empty}">
+		<span th:text="${message}"></span>
+	</div>
+	<div th:if="${message.empty}">
+		<div>
+			<p>Suggestion: <span th:text="${suggestion.suggestionText}"></span></p>
+		</div>
+		<table id="comments_table">
+			<caption>Comments</caption>
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Comment</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="comment : ${comments}">
+					<td th:text="${comment.commentId}"></td>
+					<td th:text="${comment.commentText}"></td>
+					<td th:if="${user == 'admin'}"><a
+							th:href="@{'/suggestions/'+${suggestion.id}+'/delete/'+${comment.commentId}}">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 
 </html>
