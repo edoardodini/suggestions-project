@@ -11,8 +11,23 @@
 		<a th:href="@{/}">Home</a>
 	</div>
 	<h1>Edit comment</h1>
-	<div>
+	<div th:unless="${message.empty}">
 		<span th:text="${message}"></span>
+	</div>
+	<div th:if="${message.empty}">
+		<form name="newComment_form" action="#" th:action="@{'/suggestions/'+${suggestion.id}+'/save'}"
+			th:object="${comment}" method="post">
+			<!-- The hidden field for the Comment's identifier 
+        will be sent together with the other values-->
+			<input type="hidden" th:field="*{commentId}" />
+			<p>
+				Comment: <input type="text" th:field="*{commentText}" />
+			</p>
+			<input type="hidden" th:field="*{suggestion.id}" />
+			<input type="hidden" th:field="*{suggestion.suggestionText}" />
+			<input type="hidden" th:field="*{suggestion.visible}" />
+			<button type="submit" name="btn_save">Save</button>
+		</form>
 	</div>
 </body>
 
