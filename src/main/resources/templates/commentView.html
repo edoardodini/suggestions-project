@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Comments</title>
+</head>
+
+<body>
+	<div th:if="${suggestion==null}">
+		<a th:href="@{/}">Home</a> <a th:href="@{/suggestions}">Suggestions</a>
+	</div>
+	<div th:unless="${suggestion==null}">
+		<a th:href="@{/}">Home</a> <a th:href="@{/suggestions}">Suggestions</a> <a
+			th:href="@{'/suggestions/'+${suggestion.id}+'/newComment'}">New comment</a>
+	</div>
+	<!-- IF ADMIN -->
+	<div th:if="${user == 'admin'}">
+		<p>Logged as Admin</p>
+		<form name="logout_form" th:action="@{/logout}" method="post">
+			<button type="submit" name="btn_logout">Logout</button>
+		</form>
+		<p> </p>
+	</div>
+	<!-- ELSE -->
+	<div th:unless="${user == 'admin'}">
+		<p>Logged as generic user</p>
+		<p> </p>
+	</div>
+</body>
+
+</html>
