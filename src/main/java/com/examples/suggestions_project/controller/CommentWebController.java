@@ -67,7 +67,7 @@ public class CommentWebController {
 		}
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestion);
 		model.addAttribute(MESSAGE_ATTRIBUTE,
-				suggestion == null ? "No suggestion found with suggestion id:" + suggestionId : "");
+				suggestion == null ? "No suggestion found with suggestion id: " + suggestionId : "");
 		return "editComment";
 	}
 

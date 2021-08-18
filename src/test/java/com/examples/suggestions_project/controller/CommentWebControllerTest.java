@@ -169,7 +169,7 @@ public class CommentWebControllerTest {
 		mvc.perform(get("/suggestions/1/newComment")).andExpect(view().name("editComment"))
 				.andExpect(model().attribute("suggestion", notExistingSuggestion))
 				.andExpect(model().attributeDoesNotExist("comment"))
-				.andExpect(model().attribute("message", "No suggestion found with suggestion id:" + suggestionId));
+				.andExpect(model().attribute("message", "No suggestion found with suggestion id: " + suggestionId));
 	}
 
 	@Test
