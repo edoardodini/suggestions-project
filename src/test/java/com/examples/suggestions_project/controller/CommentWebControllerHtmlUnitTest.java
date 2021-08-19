@@ -172,6 +172,27 @@ public class CommentWebControllerHtmlUnitTest {
 		form.getButtonByName("btn_save").click();
 		verify(commentService).insertNewComment(commentCreated);
 	}
+	
+	@Test
+	public void testDeleteCommentPageTitle() throws Exception {
+		HtmlPage page = webClient.getPage("/suggestions/1/delete/1");
+		assertThat(page.getTitleText()).isEqualTo("Delete comment");
+	}
+
+	@Test
+	public void testDeleteCommentsPageLinkPresent() throws Exception {
+		HtmlPage page = this.webClient.getPage("/suggestions/1/delete/1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+	
+	@Test
+	public void testDeleteCommentPageWhenSomethingWrong() throws Exception {
+		Suggestion noSuggestion = null;
+		when(suggestionService.getSuggestionById(1L)).thenReturn(noSuggestion);
+		HtmlPage page1 = this.webClient.getPage("/suggestions/1/delete/1");
+		assertThat(page1.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Delete comment")
+				.containsOnlyOnce("No suggestion found with suggestion id: 1");
+	}
 
 	private String removeWindowsCR(String s) {
 		return s.replace("\r", "");
