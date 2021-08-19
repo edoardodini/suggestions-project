@@ -197,6 +197,23 @@ public class CommentWebControllerTest {
 	}
 
 	@Test
+	public void testDeleteCommentViewWhenSuggestionAndCommentExistButAreNotRelated() throws Exception {
+		Long suggestionId = 1L;
+		Long commentId = 2L;
+		Suggestion suggestion = new Suggestion(suggestionId, "suggestionText", true);
+		Suggestion suggestionNotRelated = new Suggestion(2L, "notRelatedSuggestion", true);
+		Comment commentNotRelated = new Comment(commentId, "comment", suggestionNotRelated);
+		Comment commentRelated = null;
+		
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+		when(commentService.getCommentById(commentId)).thenReturn(commentNotRelated);
+		mvc.perform(get("/suggestions/1/delete/2")).andExpect(view().name("deleteComment"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("comment", commentRelated))
+				.andExpect(model().attribute("message", "No comment found with comment id: " + commentId));
+	}
+
+	@Test
 	public void testDeleteCommentViewWhenSuggestionExistAndCommentNot() throws Exception {
 		Suggestion suggestion = new Suggestion(1L, "suggestionText", true);
 		Comment notExistingComment = null;
