@@ -146,10 +146,10 @@ public class CommentWebControllerHtmlUnitTest {
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit comment")
 				.containsOnlyOnce("No suggestion found with suggestion id: 1");
 	}
-	
+
 	@Test
 	public void testNewCommentPage() throws Exception {
-		Suggestion suggestion = new Suggestion(1L,"suggestion",true);
+		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
 		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
 		HtmlPage page = this.webClient.getPage("/suggestions/1/newComment");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Edit comment")
@@ -158,10 +158,10 @@ public class CommentWebControllerHtmlUnitTest {
 		assertThat(form.getButtonByName("btn_save").getTextContent()).isEqualTo("Save");
 		assertThat(form.getInputByName("commentText").asText()).isEmpty();
 	}
-	
+
 	@Test
-	public void testCreateSuggestion() throws Exception {
-		Suggestion suggestion = new Suggestion(1L,"suggestion",true);
+	public void testCreateComment() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
 		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
 		HtmlPage page = this.webClient.getPage("/suggestions/1/newComment");
 		final HtmlForm form = page.getFormByName("newComment_form");
@@ -172,7 +172,7 @@ public class CommentWebControllerHtmlUnitTest {
 		form.getButtonByName("btn_save").click();
 		verify(commentService).insertNewComment(commentCreated);
 	}
-	
+
 	@Test
 	public void testDeleteCommentPageTitle() throws Exception {
 		HtmlPage page = webClient.getPage("/suggestions/1/delete/1");
@@ -184,7 +184,7 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/suggestions/1/delete/1");
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 	}
-	
+
 	@Test
 	public void testDeleteCommentPageWhenSomethingWrong() throws Exception {
 		Suggestion noSuggestion = null;
@@ -192,6 +192,31 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page1 = this.webClient.getPage("/suggestions/1/delete/1");
 		assertThat(page1.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Delete comment")
 				.containsOnlyOnce("No suggestion found with suggestion id: 1");
+	}
+
+	@Test
+	public void testDeleteCommentPageWhenSuggestionAndCommentExistsAndAreRelated() throws Exception {
+		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
+		Comment comment = new Comment(1L, "comment", suggestion);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
+		when(commentService.getCommentById(1L)).thenReturn(comment);
+		HtmlPage page = this.webClient.getPage("/suggestions/1/delete/1");
+		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Delete comment")
+				.containsOnlyOnce("Want to delete?").containsOnlyOnce("Yes");
+		assertThat(page.getFormByName("delete_form").getButtonByName("btn_submit").asText()).isEqualTo("Yes");
+	}
+
+	@Test
+	public void testDeleteComment() throws Exception {
+		Long commentIdToDelete = 1L;
+		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
+		Comment comment = new Comment(commentIdToDelete,"comment",suggestion);
+		when(commentService.getCommentById(1L)).thenReturn(comment);
+		HtmlPage page = this.webClient.getPage("/suggestions/1/delete/1");
+		final HtmlForm form = page.getFormByName("delete_form");
+		form.getButtonByName("btn_submit").click();
+		verify(commentService).deleteById(commentIdToDelete);
 	}
 
 	private String removeWindowsCR(String s) {
