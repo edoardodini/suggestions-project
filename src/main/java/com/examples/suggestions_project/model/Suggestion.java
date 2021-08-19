@@ -2,11 +2,20 @@ package com.examples.suggestions_project.model;
 
 import java.util.Objects;
 
+import javax.persistence.*;
+
+@Entity
 public class Suggestion {
 
+	@Id
+	@GeneratedValue
 	private Long id;
 	private String suggestionText;
 	private Boolean visible;
+
+	public Suggestion() {
+		// needed by Hibernate
+	}
 
 	public Suggestion(Long id, String suggestionText, boolean visible) {
 		this.id = id;
