@@ -34,14 +34,14 @@ public class SuggestionServiceTest {
 	public void testGetSuggestionByIdWithASuggestion() {
 		Suggestion insideOfOptional = new Suggestion(1L, "", true);
 		Optional<Suggestion> suggestion = Optional.of(insideOfOptional);
-		when(suggestionRepository.findById(1)).thenReturn(suggestion);
+		when(suggestionRepository.findById(1L)).thenReturn(suggestion);
 		assertThat(suggestionService.getSuggestionById(1)).isEqualTo(insideOfOptional);
 	}
 
 	@Test
 	public void testGetSuggestionByIdWithAEmptyOptional() {
 		Optional<Suggestion> suggestion = Optional.empty();
-		when(suggestionRepository.findById(1)).thenReturn(suggestion);
+		when(suggestionRepository.findById(1L)).thenReturn(suggestion);
 		assertThat(suggestionService.getSuggestionById(1)).isNull();
 	}
 
@@ -77,7 +77,7 @@ public class SuggestionServiceTest {
 	public void testGetSuggestionByIdAndVisibleWithASuggestion() {
 		Suggestion insideOfOptional = new Suggestion(1L, "", true);
 		Optional<Suggestion> suggestion = Optional.of(insideOfOptional);
-		when(suggestionRepository.findById(1)).thenReturn(suggestion);
+		when(suggestionRepository.findById(1L)).thenReturn(suggestion);
 		assertThat(suggestionService.getSuggestionByIdAndVisible(1, true)).isEqualTo(insideOfOptional);
 		assertThat(suggestionService.getSuggestionByIdAndVisible(1, false)).isNull();
 	}
@@ -85,7 +85,7 @@ public class SuggestionServiceTest {
 	@Test
 	public void testGetSuggestionByIdAndVisibleWithAEmptyOptional() {
 		Optional<Suggestion> suggestion = Optional.empty();
-		when(suggestionRepository.findById(1)).thenReturn(suggestion);
+		when(suggestionRepository.findById(1L)).thenReturn(suggestion);
 		assertThat(suggestionService.getSuggestionByIdAndVisible(1, true)).isNull();
 		assertThat(suggestionService.getSuggestionByIdAndVisible(1, false)).isNull();
 	}

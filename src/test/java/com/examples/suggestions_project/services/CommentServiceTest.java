@@ -37,7 +37,7 @@ public class CommentServiceTest {
 		Suggestion suggestion = new Suggestion(2L, "suggestion", true);
 		Comment insideOfOptional = new Comment(idToFind, "", suggestion);
 		Optional<Comment> comment = Optional.of(insideOfOptional);
-		when(commentRepository.findById(1)).thenReturn(comment);
+		when(commentRepository.findById(1L)).thenReturn(comment);
 		assertThat(commentService.getCommentById(1)).isEqualTo(insideOfOptional);
 		InOrder inOrder = inOrder(commentRepository);
 		inOrder.verify(commentRepository).findById(idToFind);
