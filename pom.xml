@@ -92,7 +92,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<!-- the default version has a bug, this has not -->
-			<version>8.0.25</version><!--$NO-MVN-MAN-VER$-->
+			<version>8.0.25</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 
 		<!-- Dependency for Spring Boot Testing -->
@@ -138,6 +138,18 @@
 							</sources>
 						</configuration>
 					</execution>
+					<execution>
+						<id>reserve-network-port</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>reserve-network-port</goal>
+						</goals>
+						<configuration>
+							<portNames>
+								<portName>mysql.port</portName>
+							</portNames>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -172,7 +184,7 @@
 									<MYSQL_PASSWORD>password</MYSQL_PASSWORD>
 								</env>
 								<ports>
-									<port>3306:3306</port>
+									<port>${mysql.port}:3306</port>
 								</ports>
 							</run>
 						</image>
@@ -207,7 +219,7 @@
 								<include>**/*IT.java</include>
 							</includes>
 							<systemPropertyVariables>
-								<spring.datasource.url>jdbc:mysql://localhost:3306/testdb</spring.datasource.url>
+								<spring.datasource.url>jdbc:mysql://localhost:${mysql.port}/testdb</spring.datasource.url>
 								<spring.datasource.username>user</spring.datasource.username>
 								<spring.datasource.password>password</spring.datasource.password>
 							</systemPropertyVariables>
