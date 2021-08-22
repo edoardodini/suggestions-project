@@ -1,6 +1,8 @@
 package com.examples.suggestions_project;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static java.util.Arrays.asList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
@@ -81,4 +84,59 @@ public class SuggestionServiceRepositoryIT {
 		assertThat(commentRepository.findById(savedComment.getCommentId())).isNotPresent();
 	}
 
+	@Test
+	public void testCommentServiceCannotInsertACommentToASuggestionNotInDatabase() {
+		Suggestion notInDatabaseSuggestion = new Suggestion();
+		assertThatThrownBy(() -> {
+			commentService.insertNewComment(new Comment(null, "comment", notInDatabaseSuggestion));
+		}).isInstanceOf(InvalidDataAccessApiUsageException.class);
+	}
+
+	@Test
+	public void testSuggestionServiceCanSearchByIdAndVisible() throws ResourceNotFoundException {
+		Suggestion suggestionVisible = suggestionService
+				.insertNewSuggestion(new Suggestion(null, "suggestion visible", false));
+		Suggestion suggestionNotVisible = suggestionService
+				.insertNewSuggestion(new Suggestion(null, "suggestion not visible", false));
+		suggestionNotVisible.setVisible(false);
+		// Update suggestionNotVisible because when inserted is visible by default
+		suggestionService.updateSuggestionById(suggestionNotVisible.getId(), suggestionNotVisible);
+
+		assertThat(suggestionService.getSuggestionByIdAndVisible(suggestionVisible.getId(), true))
+				.isEqualTo(suggestionVisible);
+		assertThat(suggestionService.getSuggestionByIdAndVisible(suggestionVisible.getId(), false)).isNull();
+		assertThat(suggestionService.getSuggestionByIdAndVisible(suggestionNotVisible.getId(), true)).isNull();
+		assertThat(suggestionService.getSuggestionByIdAndVisible(suggestionNotVisible.getId(), false))
+				.isEqualTo(suggestionNotVisible);
+	}
+
+	@Test
+	public void testSuggestionServiceCanUpdateSuggestion() throws ResourceNotFoundException {
+		String newSuggestion = "newSuggestion";
+		boolean newBoolean = false;
+		Suggestion suggestionToUpdate = suggestionService
+				.insertNewSuggestion(new Suggestion(null, "oldSuggestion", true));
+		Long id = suggestionToUpdate.getId();
+		Suggestion suggestionUpdated = suggestionService.updateSuggestionById(id,
+				new Suggestion(null, newSuggestion, newBoolean));
+		assertThat(suggestionUpdated).isEqualTo(new Suggestion(id, newSuggestion, newBoolean));
+	}
+
+	@Test
+	public void testSuggestionServiceCanSearchByVisible() throws ResourceNotFoundException {
+		Suggestion suggestionVisible1 = suggestionService.insertNewSuggestion(new Suggestion(null, "visible1", true));
+		Suggestion suggestionVisible2 = suggestionService.insertNewSuggestion(new Suggestion(null, "visible2", true));
+		Suggestion suggestionNotVisible1 = suggestionService
+				.insertNewSuggestion(new Suggestion(null, "notVisible1", true));
+		Suggestion suggestionNotVisible2 = suggestionService
+				.insertNewSuggestion(new Suggestion(null, "notVisible2", true));
+		suggestionNotVisible1.setVisible(false);
+		;
+		suggestionNotVisible2.setVisible(false);
+		suggestionService.updateSuggestionById(suggestionNotVisible1.getId(), suggestionNotVisible1);
+		suggestionService.updateSuggestionById(suggestionNotVisible2.getId(), suggestionNotVisible2);
+		assertThat(suggestionService.getAllByVisible(true)).isEqualTo(asList(suggestionVisible1, suggestionVisible2));
+		assertThat(suggestionService.getAllByVisible(false))
+				.isEqualTo(asList(suggestionNotVisible1, suggestionNotVisible2));
+	}
 }
