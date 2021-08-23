@@ -1,8 +1,8 @@
 package com.examples.suggestions_project.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
@@ -23,7 +23,7 @@ public class CommentService {
 		try {
 			comment.setCommentId(null);
 			return commentRepository.save(comment);
-		} catch (DataIntegrityViolationException exception) {
+		} catch (InvalidDataAccessApiUsageException exception) {
 			throw new ResourceNotFoundException(
 					"It is not possible to save a comment for suggestion with id: " + comment.getSuggestion().getId());
 		}

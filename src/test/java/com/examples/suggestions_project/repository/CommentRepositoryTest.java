@@ -1,6 +1,7 @@
 package com.examples.suggestions_project.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Collection;
 
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.examples.suggestions_project.model.Comment;
@@ -43,6 +45,12 @@ public class CommentRepositoryTest {
 		Collection<Comment> commentsOfSecondSuggestion = commentRepository.findBySuggestionId(secondId);
 		assertThat(commentsOfFirstSuggestion).containsExactly(commentToFirstSuggestion1, commentToFirstSuggestion2);
 		assertThat(commentsOfSecondSuggestion).containsExactly(commentToSecondSuggestion1, commentToSecondSuggestion2);
+	}
+	
+	@Test
+	public void saveRaiseException() {
+		Comment comment = new Comment(null,"comment", new Suggestion(null,"suggestion",true));
+		assertThatThrownBy(()->commentRepository.save(comment)).isInstanceOf(InvalidDataAccessApiUsageException.class);
 	}
 
 }

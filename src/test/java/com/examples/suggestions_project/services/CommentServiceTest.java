@@ -10,8 +10,8 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Comment;
@@ -72,7 +72,7 @@ public class CommentServiceTest {
 	public void testInsertNewSuggestionThatThrowsException() {
 		Suggestion suggestionInsideComment = new Suggestion(1L, "suggestion", false);
 		Comment toSave = spy(new Comment(10L, "", suggestionInsideComment));
-		when(commentRepository.save(any(Comment.class))).thenThrow(new DataIntegrityViolationException(""));
+		when(commentRepository.save(any(Comment.class))).thenThrow(new InvalidDataAccessApiUsageException(""));
 		assertThatThrownBy(() -> {
 			commentService.insertNewComment(toSave);
 		}).isInstanceOf(ResourceNotFoundException.class)
