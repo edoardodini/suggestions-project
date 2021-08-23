@@ -7,9 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static java.util.Arrays.asList;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcSecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -20,7 +22,7 @@ import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.services.SuggestionService;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = SuggestionRestController.class)
+@WebMvcTest(controllers = SuggestionRestController.class, excludeAutoConfiguration = MockMvcSecurityAutoConfiguration.class)
 public class SuggestionRestControllerTest {
 
 	@Autowired
