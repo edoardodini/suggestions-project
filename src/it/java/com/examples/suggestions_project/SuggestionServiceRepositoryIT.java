@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
@@ -89,7 +88,7 @@ public class SuggestionServiceRepositoryIT {
 		Suggestion notInDatabaseSuggestion = new Suggestion();
 		assertThatThrownBy(() -> {
 			commentService.insertNewComment(new Comment(null, "comment", notInDatabaseSuggestion));
-		}).isInstanceOf(InvalidDataAccessApiUsageException.class);
+		}).isInstanceOf(ResourceNotFoundException.class);
 	}
 
 	@Test
