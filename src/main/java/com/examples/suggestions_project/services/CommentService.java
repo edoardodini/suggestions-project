@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Comment;
@@ -35,5 +36,9 @@ public class CommentService {
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("It is not possible to delete a comment with id: " + id);
 		}
+	}
+
+	public List<Comment> getCommentsBySuggestionId(Long suggestionId) {
+		return commentRepository.findBySuggestionId(suggestionId);
 	}
 }
