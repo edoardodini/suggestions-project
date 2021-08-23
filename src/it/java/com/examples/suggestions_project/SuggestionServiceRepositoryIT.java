@@ -130,12 +130,24 @@ public class SuggestionServiceRepositoryIT {
 		Suggestion suggestionNotVisible2 = suggestionService
 				.insertNewSuggestion(new Suggestion(null, "notVisible2", true));
 		suggestionNotVisible1.setVisible(false);
-		;
 		suggestionNotVisible2.setVisible(false);
 		suggestionService.updateSuggestionById(suggestionNotVisible1.getId(), suggestionNotVisible1);
 		suggestionService.updateSuggestionById(suggestionNotVisible2.getId(), suggestionNotVisible2);
 		assertThat(suggestionService.getAllByVisible(true)).isEqualTo(asList(suggestionVisible1, suggestionVisible2));
 		assertThat(suggestionService.getAllByVisible(false))
 				.isEqualTo(asList(suggestionNotVisible1, suggestionNotVisible2));
+	}
+
+	@Test
+	public void testServiceCanNotDeleteNotExistingEntities() throws ResourceNotFoundException {
+		assertThatThrownBy(() -> suggestionService.deleteById(1L)).isInstanceOf(ResourceNotFoundException.class);
+		assertThatThrownBy(() -> commentService.deleteById(1L)).isInstanceOf(ResourceNotFoundException.class);
+	}
+
+	@Test
+	public void testSuggestionServiceCanNotUpdateNotExistingEntities() throws ResourceNotFoundException {
+		assertThatThrownBy(
+				() -> suggestionService.updateSuggestionById(1L, new Suggestion(null, "not existing suggestion", true)))
+						.isInstanceOf(ResourceNotFoundException.class);
 	}
 }
