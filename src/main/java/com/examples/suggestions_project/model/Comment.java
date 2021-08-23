@@ -2,11 +2,25 @@ package com.examples.suggestions_project.model;
 
 import java.util.Objects;
 
+import javax.persistence.*;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+@Entity
 public class Comment {
 
+	@Id
+	@GeneratedValue
 	private Long commentId;
 	private String commentText;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
 	private Suggestion suggestion;
+	
+	public Comment() {
+		//Needed by Hibernate
+	}
 
 	public Comment(Long commentId, String commentText, Suggestion suggestion) {
 		this.commentId = commentId;

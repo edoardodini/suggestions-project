@@ -33,6 +33,15 @@
 			${project.build.sourceDirectory},
 			${basedir}/src/main/resources
 		</sonar.sources>
+		<!-- Manually specify sonar.tests since, if we run sonar:sonar in a separate 
+			build, SonarQube can only detect the standard test source folder and not 
+			the additional ones configured by build-helper-maven-plugin (src/it/java 
+			and src/e2e/java). This way, SonarQube will keep track also of integration 
+			and e2e tests. -->
+		<sonar.tests>
+			${project.build.testSourceDirectory},
+			${basedir}/src/it/java
+		</sonar.tests>
 		<!-- Exclude non covered files -->
 		<sonar.coverage.exclusions>
 			**/*Application.*,
@@ -77,17 +86,31 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<!-- the default version has a bug, this has not -->
+			<version>8.0.25</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 
 		<!-- Dependency for Spring Boot Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Dependency for Spring Boot Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- Dependency for Spring Security Testing -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -115,6 +138,18 @@
 							</sources>
 						</configuration>
 					</execution>
+					<execution>
+						<id>reserve-network-port</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>reserve-network-port</goal>
+						</goals>
+						<configuration>
+							<portNames>
+								<portName>mysql.port</portName>
+							</portNames>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -128,6 +163,51 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.37.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<images>
+						<image>
+							<alias>database</alias>
+							<name>mysql:5.7</name>
+							<run>
+								<wait>
+									<log>MySQL init process done. Ready for start up.</log>
+									<time>100000</time>
+								</wait>
+								<env>
+									<MYSQL_ROOT_PASSWORD>abc123</MYSQL_ROOT_PASSWORD>
+									<MYSQL_DATABASE>testdb</MYSQL_DATABASE>
+									<MYSQL_USER>user</MYSQL_USER>
+									<MYSQL_PASSWORD>password</MYSQL_PASSWORD>
+								</env>
+								<ports>
+									<port>${mysql.port}:3306</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker:start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker:stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<!-- Plugin for performing Integration Tests -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -138,6 +218,11 @@
 								<include>**/*ApplicationTests.java</include>
 								<include>**/*IT.java</include>
 							</includes>
+							<systemPropertyVariables>
+								<spring.datasource.url>jdbc:mysql://localhost:${mysql.port}/testdb</spring.datasource.url>
+								<spring.datasource.username>user</spring.datasource.username>
+								<spring.datasource.password>password</spring.datasource.password>
+							</systemPropertyVariables>
 						</configuration>
 						<goals>
 							<goal>integration-test</goal>
@@ -149,6 +234,33 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<!-- Plugin for mutation testing -->
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<version>1.4.10</version>
+					<configuration>
+						<targetClasses>
+							<param>com.examples.suggestions_project.services.*</param>
+						</targetClasses>
+						<excludedTestClasses>
+							<param>main</param>
+						</excludedTestClasses>
+						<mutators>
+							<mutator>DEFAULTS</mutator>
+						</mutators>
+						<mutationThreshold>80</mutationThreshold>
+						<timeoutFactor>2</timeoutFactor>
+						<timeoutConstant>13000</timeoutConstant>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>mutationCoverage</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 				<plugin>
 					<!-- Plugin for performing Code Coverage -->
 					<groupId>org.jacoco</groupId>
