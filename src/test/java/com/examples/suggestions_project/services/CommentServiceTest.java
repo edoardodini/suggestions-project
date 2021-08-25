@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 import java.util.Optional;
 
@@ -82,7 +84,6 @@ public class CommentServiceTest {
 		inOrder.verify(commentRepository).save(toSave);
 		inOrder.verify(toSave).getSuggestion();
 		inOrder.verifyNoMoreInteractions();
-		;
 	}
 
 	@Test
@@ -106,6 +107,25 @@ public class CommentServiceTest {
 		InOrder inOrder = inOrder(commentRepository);
 		inOrder.verify(commentRepository).deleteById(idToDelete);
 		inOrder.verifyNoMoreInteractions();
+	}
+	
+	@Test
+	public void testGetCommentsBySuggestionIdEmpty() {
+		when(commentRepository.findBySuggestionId(1L)).thenReturn(emptyList());
+		assertThat(commentService.getCommentsBySuggestionId(1L)).isEmpty();
+		verify(commentRepository).findBySuggestionId(1L);
+		verifyNoMoreInteractions(commentRepository);
+	}
+
+	@Test
+	public void testGetCommentsBySuggestionIdNotEmpty() {
+		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
+		Comment comment1 = new Comment(2L, "comment1", suggestion);
+		Comment comment2 = new Comment(3L, "comment2", suggestion);
+		when(commentRepository.findBySuggestionId(1L)).thenReturn(asList(comment1, comment2));
+		assertThat(commentService.getCommentsBySuggestionId(1L)).containsExactly(comment1, comment2);
+		verify(commentRepository).findBySuggestionId(1L);
+		verifyNoMoreInteractions(commentRepository);
 	}
 
 }

@@ -14,7 +14,7 @@ public class Comment {
 	@GeneratedValue
 	private Long commentId;
 	private String commentText;
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
 	private Suggestion suggestion;
 	
