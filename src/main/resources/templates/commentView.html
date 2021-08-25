@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Comments</title>
+</head>
+
+<body>
+	<div th:if="${suggestion==null}">
+		<a th:href="@{/}">Home</a> <a th:href="@{/suggestions}">Suggestions</a>
+	</div>
+	<div th:unless="${suggestion==null}">
+		<a th:href="@{/}">Home</a> <a th:href="@{/suggestions}">Suggestions</a> <a
+			th:href="@{'/suggestions/'+${suggestion.id}+'/newComment'}">New comment</a>
+	</div>
+	<!-- IF ADMIN -->
+	<div th:if="${user == 'admin'}">
+		<p>Logged as Admin</p>
+		<form name="logout_form" th:action="@{/logout}" method="post">
+			<button type="submit" name="btn_logout">Logout</button>
+		</form>
+		<p> </p>
+	</div>
+	<!-- ELSE -->
+	<div th:unless="${user == 'admin'}">
+		<p>Logged as generic user</p>
+		<p> </p>
+	</div>
+	<div th:unless="${message.empty}">
+		<span th:text="${message}"></span>
+	</div>
+	<div th:if="${message.empty}">
+		<div>
+			<p>Suggestion: <span th:text="${suggestion.suggestionText}"></span></p>
+		</div>
+		<table id="comments_table">
+			<caption>Comments</caption>
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Comment</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="comment : ${comments}">
+					<td th:text="${comment.commentId}"></td>
+					<td th:text="${comment.commentText}"></td>
+					<td th:if="${user == 'admin'}"><a
+							th:href="@{'/suggestions/'+${suggestion.id}+'/delete/'+${comment.commentId}}">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>

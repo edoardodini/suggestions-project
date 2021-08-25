@@ -15,11 +15,11 @@ public class Comment {
 	private Long commentId;
 	private String commentText;
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Suggestion suggestion;
-	
+
 	public Comment() {
-		//Needed by Hibernate
+		// Needed by Hibernate
 	}
 
 	public Comment(Long commentId, String commentText, Suggestion suggestion) {

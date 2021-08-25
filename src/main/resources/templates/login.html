@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<title>Suggestions login</title>
+</head>
+
+<body>
+	<div>
+		<a th:href="@{/}">Home</a>
+	</div>
+	<div th:if="${user == 'admin'}">
+		<h1> Already logged as admin </h1>
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" />
+		</form>
+	</div>
+	<div th:unless="${user == 'admin'}">
+		<div th:if="${param.error}">
+			Invalid username and password.
+		</div>
+		<div th:if="${param.logout}">
+			You have been logged out.
+		</div>
+		<div th:unless="${param.logout}">
+			<form name="login_form" th:action="@{/login}" method="post">
+				<div><label> User Name: <input type="text" name="username" /> </label></div>
+				<div><label> Password: <input type="password" name="password" /> </label></div>
+				<div><button type="submit" name="btn_submit">Login</button></div>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

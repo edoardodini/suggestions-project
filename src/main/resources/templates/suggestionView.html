@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Suggestions</title>
+</head>
+
+<body>
+	<div>
+		<a th:href="@{/}">Home</a> <a th:href="@{/suggestions/new}">New suggestion</a>
+	</div>
+	<!-- IF ADMIN -->
+	<div th:if="${user == 'admin'}">
+		<p>Logged as Admin</p>
+		<form name="logout_form" th:action="@{/logout}" method="post">
+			<button type="submit" name="btn_logout">Logout</button>
+		</form>
+		<p> </p>
+	</div>
+	<!-- ELSE -->
+	<div th:unless="${user == 'admin'}">
+		<p>Logged as generic user</p>
+	</div>
+	<!-- IF NO SUGGESTIONS -->
+	<div th:if="${suggestions.empty}">
+		<div>No suggestions</div>
+	</div>
+	<!-- ELSE -->
+	<div th:unless="${suggestions.empty}">
+		<table id="suggestions_table">
+			<caption>Suggestions</caption>
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Suggestion</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="suggestion : ${suggestions}">
+					<td th:text="${suggestion.id}"></td>
+					<td th:text="${suggestion.suggestionText}"></td>
+					<td><a th:href="@{'/suggestions/' + ${suggestion.id} + '/comments'}">Comments</a></td>
+					<td th:if="${user == 'admin'}"><a th:href="@{'/suggestions/edit/' + ${suggestion.id}}">Edit</a></td>
+					<td th:if="${user == 'admin'}"><a th:href="@{'/suggestions/hide/' + ${suggestion.id}}">Hide</a></td>
+					<td th:if="${user == 'admin'}"><a th:href="@{'/suggestions/delete/' + ${suggestion.id}}">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div th:if="${user == 'admin'}">
+		<p> </p>
+		<!-- IF NO SUGGESTIONS -->
+		<div th:if="${hiddensuggestions.empty}">
+			<div>No hidden suggestions</div>
+		</div>
+		<!-- ELSE -->
+		<div th:unless="${hiddensuggestions.empty}">
+			<table id="hiddenSuggestions_table">
+				<caption>Hidden suggestions</caption>
+				<thead>
+					<tr>
+						<th scope="col">ID</th>
+						<th scope="col">Suggestion</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="suggestion : ${hiddensuggestions}">
+						<td th:text="${suggestion.id}"></td>
+						<td th:text="${suggestion.suggestionText}"></td>
+						<td><a th:href="@{'/suggestions/' + ${suggestion.id} + '/comments'}">Comments</a></td>
+						<td><a th:href="@{'/suggestions/edit/' + ${suggestion.id}}">Edit</a></td>
+						<td><a th:href="@{'/suggestions/hide/' + ${suggestion.id}}">Show</a></td>
+						<td><a th:href="@{'/suggestions/delete/' + ${suggestion.id}}">Delete</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+
+</html>
