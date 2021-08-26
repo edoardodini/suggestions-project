@@ -14,8 +14,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.examples.suggestions_project.config.TestSecurityConfig;
 import com.examples.suggestions_project.model.Suggestion;
 import com.examples.suggestions_project.services.AuthService;
 import com.examples.suggestions_project.services.SuggestionService;
@@ -26,6 +28,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = SuggestionWebController.class)
+@Import(TestSecurityConfig.class)
 public class SuggestionWebControllerHtmlUnitTest {
 
 	@Autowired
