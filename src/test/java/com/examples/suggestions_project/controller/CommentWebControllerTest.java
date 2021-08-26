@@ -207,7 +207,7 @@ public class CommentWebControllerTest {
 		Suggestion suggestionNotRelated = new Suggestion(2L, "notRelatedSuggestion", true);
 		Comment commentNotRelated = new Comment(commentId, "comment", suggestionNotRelated);
 		Comment commentRelated = null;
-		
+
 		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
 		when(commentService.getCommentById(commentId)).thenReturn(commentNotRelated);
 		mvc.perform(get("/suggestions/1/delete/2")).andExpect(view().name("deleteComment"))

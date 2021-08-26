@@ -214,7 +214,7 @@ public class CommentWebControllerHtmlUnitTest {
 		Long commentIdToDelete = 1L;
 		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
 		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
-		Comment comment = new Comment(commentIdToDelete,"comment",suggestion);
+		Comment comment = new Comment(commentIdToDelete, "comment", suggestion);
 		when(commentService.getCommentById(1L)).thenReturn(comment);
 		HtmlPage page = this.webClient.getPage("/suggestions/1/delete/1");
 		final HtmlForm form = page.getFormByName("delete_form");

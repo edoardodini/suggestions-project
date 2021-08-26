@@ -31,5 +31,5 @@ public class ExceptionWebControllerTest {
 	public void testReturnHomeView() throws Exception {
 		ModelAndViewAssert.assertViewName(mvc.perform(get("/errorPage")).andReturn().getModelAndView(), "errorPage");
 	}
-	
+
 }

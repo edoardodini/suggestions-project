@@ -100,7 +100,7 @@ public class SuggestionWebController {
 		suggestionService.deleteById(suggestion.getId());
 		return REDIRECT_SUGGESTIONS;
 	}
-	
+
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public String myRuntimeException(Exception e, RedirectAttributes redirectAttrs) {
 		redirectAttrs.addFlashAttribute(MESSAGE_ATTRIBUTE, e.getMessage());
