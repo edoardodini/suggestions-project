@@ -19,10 +19,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.examples.suggestions_project.config.TestSecurityConfig;
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
 import com.examples.suggestions_project.model.Comment;
 import com.examples.suggestions_project.model.Suggestion;
@@ -32,6 +34,7 @@ import com.examples.suggestions_project.services.SuggestionService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = CommentWebController.class)
+@Import(TestSecurityConfig.class)
 public class CommentWebControllerTest {
 
 	@Autowired
