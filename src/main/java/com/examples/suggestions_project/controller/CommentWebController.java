@@ -63,9 +63,13 @@ public class CommentWebController {
 	public String newSuggestion(Model model, @PathVariable long suggestionId) {
 		Suggestion suggestion = suggestionService.getSuggestionById(suggestionId);
 		if (suggestion != null) {
-			Comment newComment = new Comment();
-			newComment.setSuggestion(suggestion);
-			model.addAttribute(COMMENT_ATTRIBUTE, newComment);
+			if (!authService.isAdmin() && Boolean.FALSE.equals(suggestion.getVisible())) {
+				suggestion = null;
+			} else {
+				Comment newComment = new Comment();
+				newComment.setSuggestion(suggestion);
+				model.addAttribute(COMMENT_ATTRIBUTE, newComment);
+			}
 		}
 		model.addAttribute(SUGGESTION_ATTRIBUTE, suggestion);
 		model.addAttribute(MESSAGE_ATTRIBUTE,
@@ -81,8 +85,8 @@ public class CommentWebController {
 		if (suggestionById == null) {
 			model.addAttribute(MESSAGE_ATTRIBUTE, NO_SUGGESTION_FOUND_WITH_SUGGESTION_ID + suggestionId);
 		} else {
-			if(comment!=null&&!comment.getSuggestion().getId().equals(suggestionById.getId())) {
-				comment=null;
+			if (comment != null && !comment.getSuggestion().getId().equals(suggestionById.getId())) {
+				comment = null;
 			}
 			model.addAttribute(MESSAGE_ATTRIBUTE,
 					comment == null ? "No comment found with comment id: " + commentId : "");
@@ -93,7 +97,12 @@ public class CommentWebController {
 
 	@PostMapping("/save")
 	public String saveComment(Comment comment, @PathVariable long suggestionId) throws ResourceNotFoundException {
-		commentService.insertNewComment(comment);
+		if (comment.getSuggestion().getVisible() || authService.isAdmin()) {
+			commentService.insertNewComment(comment);
+		} else {
+			throw new ResourceNotFoundException(
+					"It is not possible to save a comment for suggestion with id: " + comment.getSuggestion().getId());
+		}
 		return "redirect:/suggestions/" + suggestionId + "/comments";
 	}
 

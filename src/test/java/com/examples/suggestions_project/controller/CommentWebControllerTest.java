@@ -3,6 +3,7 @@ package com.examples.suggestions_project.controller;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -158,6 +159,14 @@ public class CommentWebControllerTest {
 		Comment newComment = new Comment();
 		newComment.setSuggestion(suggestion);
 		Long suggestionId = 1L;
+		// when admin
+		when(authService.isAdmin()).thenReturn(true);
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
+		mvc.perform(get("/suggestions/1/newComment")).andExpect(view().name("editComment"))
+				.andExpect(model().attribute("suggestion", suggestion))
+				.andExpect(model().attribute("comment", newComment)).andExpect(model().attribute("message", ""));
+		// when not admin
+		when(authService.isAdmin()).thenReturn(false);
 		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(suggestion);
 		mvc.perform(get("/suggestions/1/newComment")).andExpect(view().name("editComment"))
 				.andExpect(model().attribute("suggestion", suggestion))
@@ -173,6 +182,28 @@ public class CommentWebControllerTest {
 				.andExpect(model().attribute("suggestion", notExistingSuggestion))
 				.andExpect(model().attributeDoesNotExist("comment"))
 				.andExpect(model().attribute("message", "No suggestion found with suggestion id: " + suggestionId));
+	}
+
+	@Test
+	public void testNewCommentViewWhenSuggestionHidden() throws Exception {
+		Suggestion notVisibleSuggestion = new Suggestion(1L, "hiddenSuggestion", false);
+		Suggestion notExistingSuggestion = null;
+		Long suggestionId = 1L;
+		// when not admin
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(notVisibleSuggestion);
+		when(authService.isAdmin()).thenReturn(false);
+		mvc.perform(get("/suggestions/1/newComment")).andExpect(view().name("editComment"))
+				.andExpect(model().attribute("suggestion", notExistingSuggestion))
+				.andExpect(model().attributeDoesNotExist("comment"))
+				.andExpect(model().attribute("message", "No suggestion found with suggestion id: " + suggestionId));
+		// when admin
+		Comment newComment = new Comment();
+		newComment.setSuggestion(notVisibleSuggestion);
+		when(suggestionService.getSuggestionById(suggestionId)).thenReturn(notVisibleSuggestion);
+		when(authService.isAdmin()).thenReturn(true);
+		mvc.perform(get("/suggestions/1/newComment")).andExpect(view().name("editComment"))
+				.andExpect(model().attribute("suggestion", notVisibleSuggestion))
+				.andExpect(model().attribute("comment", newComment)).andExpect(model().attribute("message", ""));
 	}
 
 	@Test
@@ -252,6 +283,16 @@ public class CommentWebControllerTest {
 				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/suggestions/1/comments"))
 				.andExpect(status().is3xxRedirection());
 		verify(commentService).insertNewComment(new Comment(1L, "comment", suggestion));
+		verifyNoMoreInteractions(commentService);
+		// suggestion not visible but admin
+		suggestion = new Suggestion(1L, "suggestion", false);
+		when(authService.isAdmin()).thenReturn(true);
+		mvc.perform(post("/suggestions/1/save").param("commentId", "1").param("commentText", "comment")
+				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
+				.param("suggestion.visible", "false")).andExpect(view().name("redirect:/suggestions/1/comments"))
+				.andExpect(status().is3xxRedirection());
+		verify(commentService).insertNewComment(new Comment(1L, "comment", suggestion));
+		verifyNoMoreInteractions(commentService);
 	}
 
 	@Test
@@ -259,10 +300,11 @@ public class CommentWebControllerTest {
 		mvc.perform(post("/suggestions/1/removeComment").param("commentId", "2"))
 				.andExpect(view().name("redirect:/suggestions/1/comments")).andExpect(status().is3xxRedirection());
 		verify(commentService).deleteById(2L);
+		verifyNoMoreInteractions(commentService);
 	}
 
 	@Test
-	public void testPostSaveThrowsException() throws Exception {
+	public void testPostSaveThrowsExceptionBecauseSuggestionNotExisting() throws Exception {
 		String exceptionMessage = "message";
 		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
 		Comment comment = new Comment(2L, "comment", suggestion);
@@ -272,6 +314,19 @@ public class CommentWebControllerTest {
 				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/errorPage"))// go to errorPage
 				.andExpect(flash().attribute("message", exceptionMessage)).andExpect(status().is3xxRedirection());
 		verify(commentService).insertNewComment(comment);
+	}
+
+	@Test
+	public void testPostSaveThrowsExceptionBecauseSuggestionNotVisibleAndNotAdmin() throws Exception {
+		when(authService.isAdmin()).thenReturn(false);
+		mvc.perform(post("/suggestions/1/save")
+				.param("commentId", "2").param("commentText", "comment").param("suggestion.id", "1")
+				.param("suggestion.suggestionText", "suggestion").param("suggestion.visible", "false"))
+				.andExpect(view().name("redirect:/errorPage"))// go to errorPage
+				.andExpect(
+						flash().attribute("message", "It is not possible to save a comment for suggestion with id: 1"))
+				.andExpect(status().is3xxRedirection());
+		verifyNoMoreInteractions(commentService);
 	}
 
 	@Test
