@@ -2,6 +2,7 @@ package com.examples.suggestions_project.controller;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -278,21 +279,23 @@ public class CommentWebControllerTest {
 	@Test
 	public void testPostSaveShouldSaveExistingComment() throws Exception {
 		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
-		mvc.perform(post("/suggestions/1/save").param("commentId", "1").param("commentText", "comment")
-				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
-				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/suggestions/1/comments"))
-				.andExpect(status().is3xxRedirection());
-		verify(commentService).insertNewComment(new Comment(1L, "comment", suggestion));
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
+		mvc.perform(post("/suggestions/1/save").param("commentText", "comment"))
+				.andExpect(view().name("redirect:/suggestions/1/comments")).andExpect(status().is3xxRedirection());
+		verify(suggestionService).getSuggestionById(1L);
+		verify(commentService).insertNewComment(new Comment(null, "comment", suggestion));
 		verifyNoMoreInteractions(commentService);
+		verifyNoMoreInteractions(suggestionService);
 		// suggestion not visible but admin
 		suggestion = new Suggestion(1L, "suggestion", false);
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestion);
 		when(authService.isAdmin()).thenReturn(true);
-		mvc.perform(post("/suggestions/1/save").param("commentId", "1").param("commentText", "comment")
-				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
-				.param("suggestion.visible", "false")).andExpect(view().name("redirect:/suggestions/1/comments"))
-				.andExpect(status().is3xxRedirection());
-		verify(commentService).insertNewComment(new Comment(1L, "comment", suggestion));
+		mvc.perform(post("/suggestions/1/save").param("commentText", "comment"))
+				.andExpect(view().name("redirect:/suggestions/1/comments")).andExpect(status().is3xxRedirection());
+		verify(suggestionService, times(2)).getSuggestionById(1L);
+		verify(commentService).insertNewComment(new Comment(null, "comment", suggestion));
 		verifyNoMoreInteractions(commentService);
+		verifyNoMoreInteractions(suggestionService);
 	}
 
 	@Test
@@ -305,23 +308,21 @@ public class CommentWebControllerTest {
 
 	@Test
 	public void testPostSaveThrowsExceptionBecauseSuggestionNotExisting() throws Exception {
-		String exceptionMessage = "message";
-		Suggestion suggestion = new Suggestion(1L, "suggestion", true);
-		Comment comment = new Comment(2L, "comment", suggestion);
-		when(commentService.insertNewComment(comment)).thenThrow(new ResourceNotFoundException(exceptionMessage));
-		mvc.perform(post("/suggestions/1/save").param("commentId", "2").param("commentText", "comment")
-				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
-				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/errorPage"))// go to errorPage
+		String exceptionMessage = "It is not possible to save a comment for suggestion with id: 1";
+		Suggestion suggestionNotExisting = null;
+		when(suggestionService.getSuggestionById(1L)).thenReturn(suggestionNotExisting);
+		mvc.perform(post("/suggestions/1/save").param("commentText", "comment"))
+				.andExpect(view().name("redirect:/errorPage"))// go to errorPage
 				.andExpect(flash().attribute("message", exceptionMessage)).andExpect(status().is3xxRedirection());
-		verify(commentService).insertNewComment(comment);
+		verify(suggestionService).getSuggestionById(1L);
+		verifyNoMoreInteractions(commentService);
 	}
 
 	@Test
 	public void testPostSaveThrowsExceptionBecauseSuggestionNotVisibleAndNotAdmin() throws Exception {
 		when(authService.isAdmin()).thenReturn(false);
-		mvc.perform(post("/suggestions/1/save")
-				.param("commentId", "2").param("commentText", "comment").param("suggestion.id", "1")
-				.param("suggestion.suggestionText", "suggestion").param("suggestion.visible", "false"))
+		when(suggestionService.getSuggestionById(1L)).thenReturn(new Suggestion(1L,"notVisibleSuggestion",false));
+		mvc.perform(post("/suggestions/1/save").param("commentText", "comment"))
 				.andExpect(view().name("redirect:/errorPage"))// go to errorPage
 				.andExpect(
 						flash().attribute("message", "It is not possible to save a comment for suggestion with id: 1"))
@@ -335,10 +336,9 @@ public class CommentWebControllerTest {
 		String exceptionMessage = "message";
 		doThrow(new ResourceNotFoundException(exceptionMessage)).when(commentService).deleteById(commentId);
 
-		mvc.perform(post("/suggestions/1/removeComment").param("commentId", "2").param("commentText", "comment")
-				.param("suggestion.id", "1").param("suggestion.suggestionText", "suggestion")
-				.param("suggestion.visible", "true")).andExpect(view().name("redirect:/errorPage"))
-				.andExpect(flash().attribute("message", exceptionMessage)).andExpect(status().is3xxRedirection());
+		mvc.perform(post("/suggestions/1/removeComment").param("commentId", "2"))
+				.andExpect(view().name("redirect:/errorPage")).andExpect(flash().attribute("message", exceptionMessage))
+				.andExpect(status().is3xxRedirection());
 		verify(commentService).deleteById(commentId);
 	}
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
@@ -96,19 +97,29 @@ public class CommentWebController {
 	}
 
 	@PostMapping("/save")
-	public String saveComment(Comment comment, @PathVariable long suggestionId) throws ResourceNotFoundException {
-		if (comment.getSuggestion().getVisible() || authService.isAdmin()) {
-			commentService.insertNewComment(comment);
+	public String saveComment(@RequestParam String commentText, @PathVariable long suggestionId)
+			throws ResourceNotFoundException {
+		Suggestion suggestion = suggestionService.getSuggestionById(suggestionId);
+		if (suggestion != null) {
+			Comment comment = new Comment();
+			comment.setSuggestion(suggestion);
+			comment.setCommentText(commentText);
+			if (Boolean.TRUE.equals(suggestion.getVisible()) || authService.isAdmin()) {
+				commentService.insertNewComment(comment);
+			} else {
+				throw new ResourceNotFoundException(
+						"It is not possible to save a comment for suggestion with id: " + suggestionId);
+			}
 		} else {
 			throw new ResourceNotFoundException(
-					"It is not possible to save a comment for suggestion with id: " + comment.getSuggestion().getId());
+					"It is not possible to save a comment for suggestion with id: " + suggestionId);
 		}
 		return "redirect:/suggestions/" + suggestionId + "/comments";
 	}
 
 	@PostMapping("/removeComment")
-	public String deleteSuggestion(Comment comment, @PathVariable long suggestionId) throws ResourceNotFoundException {
-		commentService.deleteById(comment.getCommentId());
+	public String deleteSuggestion(@RequestParam Long commentId, @PathVariable long suggestionId) throws ResourceNotFoundException {
+		commentService.deleteById(commentId);
 		return "redirect:/suggestions/" + suggestionId + "/comments";
 	}
 

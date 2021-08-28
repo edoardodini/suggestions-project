@@ -19,7 +19,7 @@
 			<form name="update_form" action="#" th:action="@{/suggestions/update}" th:object="${suggestion}"
 				method="post">
 				<!-- The hidden field for the Suggestion's identifier 
-        will be sent together with the other values-->
+        			will be sent together with the other values-->
 				<input type="hidden" th:field="*{id}" />
 				<p>
 					Suggestion: <input type="text" th:field="*{suggestionText}" />
@@ -30,13 +30,9 @@
 		</div>
 		<div th:if="${operation=='new'}">
 			<form name="new_form" action="#" th:action="@{/suggestions/save}" th:object="${suggestion}" method="post">
-				<!-- The hidden field for the Suggestion's identifier 
-        will be sent together with the other values-->
-				<input type="hidden" th:field="*{id}" />
 				<p>
 					Suggestion: <input type="text" th:field="*{suggestionText}" />
 				</p>
-				<input type="hidden" th:field="*{visible}" />
 				<button type="submit" name="btn_submit">Save</button>
 			</form>
 		</div>

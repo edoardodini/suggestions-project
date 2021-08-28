@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.examples.suggestions_project.exception.ResourceNotFoundException;
@@ -83,7 +84,9 @@ public class SuggestionWebController {
 	}
 
 	@PostMapping("suggestions/save")
-	public String saveSuggestion(Model model, Suggestion suggestion) {
+	public String saveSuggestion(Model model, @RequestParam String suggestionText) {
+		Suggestion suggestion = new Suggestion();
+		suggestion.setSuggestionText(suggestionText);
 		suggestionService.insertNewSuggestion(suggestion);
 		return REDIRECT_SUGGESTIONS;
 	}
@@ -96,8 +99,8 @@ public class SuggestionWebController {
 	}
 
 	@PostMapping("suggestions/remove")
-	public String deleteSuggestion(Suggestion suggestion, Model model) throws ResourceNotFoundException {
-		suggestionService.deleteById(suggestion.getId());
+	public String deleteSuggestion(@RequestParam Long id, Model model) throws ResourceNotFoundException {
+		suggestionService.deleteById(id);
 		return REDIRECT_SUGGESTIONS;
 	}
 
