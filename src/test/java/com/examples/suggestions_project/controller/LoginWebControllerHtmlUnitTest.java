@@ -40,6 +40,7 @@ public class LoginWebControllerHtmlUnitTest {
 		HtmlPage page = webClient.getPage("/login");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("User Name: ")
 				.containsOnlyOnce("Password: ").containsOnlyOnce("Login");
+		assertThat(page.getFormByName("login_form")).isNotNull();
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 		verify(authService).isAdmin();
 		verifyNoMoreInteractions(authService);
@@ -52,6 +53,7 @@ public class LoginWebControllerHtmlUnitTest {
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home")
 				.containsOnlyOnce("Invalid username and password.").containsOnlyOnce("User Name: ")
 				.containsOnlyOnce("Password: ").containsOnlyOnce("Login");
+		assertThat(page.getFormByName("login_form")).isNotNull();
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 		verify(authService).isAdmin();
 		verifyNoMoreInteractions(authService);
@@ -73,7 +75,8 @@ public class LoginWebControllerHtmlUnitTest {
 		when(authService.isAdmin()).thenReturn(true);
 		HtmlPage page = webClient.getPage("/login");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home")
-				.containsOnlyOnce(" Already logged as admin ");
+				.containsOnlyOnce(" Already logged as admin ").containsOnlyOnce("Sign Out");
+		assertThat(page.getFormByName("logout_form")).isNotNull();
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 		verify(authService).isAdmin();
 		verifyNoMoreInteractions(authService);

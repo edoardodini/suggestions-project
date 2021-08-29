@@ -12,8 +12,8 @@
 	</div>
 	<div th:if="${user == 'admin'}">
 		<h1> Already logged as admin </h1>
-		<form th:action="@{/logout}" method="post">
-			<input type="submit" value="Sign Out" />
+		<form name="logout_form" th:action="@{/logout}" method="post">
+			<div><button type="submit" name="btn_submit">Sign Out</button></div>
 		</form>
 	</div>
 	<div th:unless="${user == 'admin'}">
