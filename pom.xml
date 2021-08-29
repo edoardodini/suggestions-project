@@ -142,6 +142,17 @@
 			<artifactId>htmlunit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Dependency for using Selenium during tests -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>htmlunit-driver</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-support</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Dependency for Spring Boot Security -->
 		<dependency>

@@ -10,20 +10,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes=AuthService.class)
+@ContextConfiguration(classes = AuthService.class)
 public class AuthServiceTest {
-	
+
 	@Autowired
 	private AuthService authenticationService;
-	
+
 	@Test
-	@WithMockUser(username="admin",roles={"admin"})
+	@WithMockUser(username = "admin", roles = { "admin" })
 	public void testIsAdminWhenAdmin() {
 		assertThat(authenticationService.isAdmin()).isTrue();
 	}
-	
+
 	@Test
-	@WithMockUser(username="notAdmin",roles={"notAdmin"})
+	@WithMockUser(username = "notAdmin", roles = { "notAdmin" })
 	public void testIsAdminWhenNotAdmin() {
 		assertThat(authenticationService.isAdmin()).isFalse();
 	}
