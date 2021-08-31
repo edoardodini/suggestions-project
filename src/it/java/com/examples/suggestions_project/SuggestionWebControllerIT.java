@@ -347,7 +347,7 @@ public class SuggestionWebControllerIT {
 		// delete by clicking the button
 		assertThat(suggestionRepository.findAll().size()).isEqualTo(1);
 		driver.findElement(By.name("btn_submit")).click();
-		assertThat(suggestionRepository.findAll().size()).isEqualTo(0);
+		assertThat(suggestionRepository.findAll().size()).isZero();
 		// go to "/suggestions" to check that old suggestion has been deleted
 		driver.get(suggestionsUrl);
 		assertThat(driver.getPageSource()).contains("Home", "Suggestions", "New suggestion", "Logged as Admin",
@@ -445,7 +445,7 @@ public class SuggestionWebControllerIT {
 		// delete by clicking the button
 		assertThat(suggestionRepository.findAll().size()).isEqualTo(1);
 		driver2.findElement(By.name("btn_submit")).click();
-		assertThat(suggestionRepository.findAll().size()).isEqualTo(0);
+		assertThat(suggestionRepository.findAll().size()).isZero();
 		driver2.quit();
 
 		// user 1 try to edit but the suggestion does not exist anymore
@@ -509,7 +509,7 @@ public class SuggestionWebControllerIT {
 		// delete by clicking the button
 		assertThat(suggestionRepository.findAll().size()).isEqualTo(1);
 		driver2.findElement(By.name("btn_submit")).click();
-		assertThat(suggestionRepository.findAll().size()).isEqualTo(0);
+		assertThat(suggestionRepository.findAll().size()).isZero();
 		driver2.quit();
 
 		// user 1 try to show but the suggestion does not exist anymore
@@ -549,7 +549,7 @@ public class SuggestionWebControllerIT {
 		// delete by clicking the button
 		assertThat(suggestionRepository.findAll().size()).isEqualTo(1);
 		driver2.findElement(By.name("btn_submit")).click();
-		assertThat(suggestionRepository.findAll().size()).isEqualTo(0);
+		assertThat(suggestionRepository.findAll().size()).isZero();
 		driver2.quit();
 		// user 1 try to delete but the suggestion does not exist anymore
 		// submit the edit
