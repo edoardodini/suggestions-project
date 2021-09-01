@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Edit suggestion</title>
+</head>
+
+<body>
+	<div>
+		<a th:href="@{/}">Home</a>
+	</div>
+	<h1>Edit suggestion</h1>
+	<div th:unless="${message.empty}">
+		<span th:text="${message}"></span>
+	</div>
+	<div th:if="${message.empty}">
+		<div th:if="${operation=='update'}">
+			<form name="update_form" action="#" th:action="@{/suggestions/update}" th:object="${suggestion}"
+				method="post">
+				<!-- The hidden field for the Suggestion's identifier 
+        			will be sent together with the other values-->
+				<input type="hidden" th:field="*{id}" />
+				<p>
+					Suggestion: <input type="text" th:field="*{suggestionText}" />
+				</p>
+				<input type="hidden" th:field="*{visible}" />
+				<button type="submit" name="btn_submit">Update</button>
+			</form>
+		</div>
+		<div th:if="${operation=='new'}">
+			<form name="new_form" action="#" th:action="@{/suggestions/save}" th:object="${suggestion}" method="post">
+				<p>
+					Suggestion: <input type="text" th:field="*{suggestionText}" />
+				</p>
+				<button type="submit" name="btn_submit">Save</button>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>
