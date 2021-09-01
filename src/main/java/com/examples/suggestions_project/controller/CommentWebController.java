@@ -118,7 +118,8 @@ public class CommentWebController {
 	}
 
 	@PostMapping("/removeComment")
-	public String deleteSuggestion(@RequestParam Long commentId, @PathVariable long suggestionId) throws ResourceNotFoundException {
+	public String deleteSuggestion(@RequestParam Long commentId, @PathVariable long suggestionId)
+			throws ResourceNotFoundException {
 		commentService.deleteById(commentId);
 		return "redirect:/suggestions/" + suggestionId + "/comments";
 	}

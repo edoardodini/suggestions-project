@@ -352,7 +352,6 @@ public class SuggestionWebControllerIT {
 		driver.get(suggestionsUrl);
 		assertThat(driver.getPageSource()).contains("Home", "Suggestions", "New suggestion", "Logged as Admin",
 				"Logout", "No suggestions", "No hidden suggestions");
-		driver.get(suggestionsUrl);
 	}
 
 	@Test
