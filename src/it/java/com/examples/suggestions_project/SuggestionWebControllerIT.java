@@ -123,7 +123,7 @@ public class SuggestionWebControllerIT {
 		assertThat(driver.getCurrentUrl()).isEqualTo(newSuggestionUrl);
 		// go to "/suggestions"
 		driver.get(suggestionsUrl);
-		// go to "/suggestions/edit"
+		// go to "/suggestions/{id}/comments"
 		driver.findElement(By.linkText("Comments")).click();
 		assertThat(driver.getCurrentUrl())
 				.isEqualTo(suggestionsUrl + "/" + testSuggestionVisible.getId() + "/comments");

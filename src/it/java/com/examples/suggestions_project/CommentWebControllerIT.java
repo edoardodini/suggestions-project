@@ -112,11 +112,11 @@ public class CommentWebControllerIT {
 	public void testCommentsPageLogoutAdmin() {
 		// login as admin
 		adminLogin();
-		// go to "/suggestions"
+		// go to "/suggestions/{id}/comments"
 		driver.get(suggestionsUrlSlash + 1 + "/comments");
 		assertThat(driver.getPageSource()).contains("Home", "Comments", "Logged as Admin", "Logout");
 		driver.findElement(By.name("btn_logout")).click();
-		// go to "/suggestions"
+		// go to "/suggestions/{id}/comments"
 		driver.get(suggestionsUrlSlash + 1 + "/comments");
 		assertThat(driver.getPageSource()).contains("Home", "Comments", "Logged as generic user");
 	}
@@ -242,7 +242,7 @@ public class CommentWebControllerIT {
 		assertThat(driver.getPageSource()).contains("Home", "Edit comment", "Comment:", "Save");
 		driver.findElement(By.name("commentText")).sendKeys("firstComment1");
 		driver.findElement(By.name("btn_save")).click();
-		// go to "/suggestions"
+		// go to "/suggestions/{id}/comments"
 		driver.get(suggestionsUrlSlash + suggestionVisible.getId() + "/comments");
 		assertThat(driver.getPageSource()).contains("Home", "Suggestions", "New comment", "Logged as generic user",
 				"Suggestion:", suggestionVisible.getSuggestionText());
@@ -284,7 +284,7 @@ public class CommentWebControllerIT {
 		assertThat(driver.getCurrentUrl()).isEqualTo(baseUrl);
 	}
 
-	@Test // da fare
+	@Test
 	public void testDeleteCommentPageAdmin() {
 		adminLogin();
 		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestionText", true));
@@ -296,7 +296,7 @@ public class CommentWebControllerIT {
 				"Suggestion:", suggestion.getSuggestionText());
 		assertThat(driver.findElement(By.id("comments_table")).getText()).contains("ID", "Comments", "Comment",
 				comment.getCommentId().toString(), comment.getCommentText(), "Comments", "Delete");
-		// go to "/suggestions/delete/{id}"
+		// go to "/suggestions/{sugg.id}/delete/{comm.id}"
 		driver.findElement(By.linkText("Delete")).click();
 		assertThat(driver.getPageSource()).contains("Home", "Delete comment", "Want to delete?", "Yes");
 		// delete by clicking the button
@@ -312,7 +312,7 @@ public class CommentWebControllerIT {
 
 	@Test
 	public void testAdminPageWithNotAdminUser() {
-		// go to "/suggestions/delete/1"
+		// go to "/suggestions/{sugg.id}/delete/{comm.id}"
 		driver.get(suggestionsUrlSlash + 1 + "/delete/" + 1);
 		// go to "/"
 		assertThat(driver.getCurrentUrl()).isEqualTo(loginUrl);
@@ -323,21 +323,21 @@ public class CommentWebControllerIT {
 		int idSuggestion = 1;
 		int idComment = 1;
 		adminLogin();
-		// go to "/suggestions/{id}/comments"
+		// go to "/suggestions/{sugg.id}/comments"
 		driver.get(suggestionsUrlSlash + idSuggestion + "/comments");
 		assertThat(driver.getPageSource()).contains("Home", "Suggestions", "Logged as Admin",
 				NO_SUGGESTION_FOUND_WITH_ID + idSuggestion, "Logout");
-		// go to "/suggestions/delete/{id}"
+		// go to "/suggestions/{sugg.id}/delete/{comm.id}"
 		driver.get(suggestionsUrlSlash + idSuggestion + "/delete/" + idComment);
 		assertThat(driver.getPageSource()).contains("Home", "Delete comment",
 				NO_SUGGESTION_FOUND_WITH_ID + idSuggestion);
 		// creation of a suggestion
 		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestion", true));
-		// go to "/suggestions/{id}/comments"
+		// go to "/suggestions/{sugg.id}/comments"
 		driver.get(suggestionsUrlSlash + suggestion.getId() + "/comments");
 		assertThat(driver.getPageSource()).contains("Home", "Suggestions", "New comment", "Logged as Admin",
 				suggestion.getId().toString(), suggestion.getSuggestionText(), "Logout");
-		// go to "/suggestions/delete/{id}"
+		// go to "/suggestions/{sugg.id}/delete/{comm.id}"
 		driver.get(suggestionsUrlSlash + suggestion.getId() + "/delete/" + idComment);
 		assertThat(driver.getPageSource()).contains("Home", "Delete comment",
 				NO_COMMENT_FOUND_WITH_COMMENT_ID + idComment);
@@ -354,7 +354,7 @@ public class CommentWebControllerIT {
 		assertThat(driver.getPageSource()).contains("Home", "New suggestion", "Logged as Admin", "Logout");
 		assertThat(driver.findElement(By.id("suggestions_table")).getText()).contains("ID", "Suggestions",
 				suggestion.getId().toString(), suggestion.getSuggestionText());
-		// go to "/suggestions/{id}/newComment"
+		// go to "/suggestions/{sugg.id}/newComment"
 		driver.get(suggestionsUrlSlash + suggestion.getId() + "/newComment");
 		// fill the form
 		driver.findElement(By.name("commentText")).sendKeys("new");
@@ -398,7 +398,7 @@ public class CommentWebControllerIT {
 				"Suggestion:", suggestion.getSuggestionText(), "Logout");
 		assertThat(driver.findElement(By.id("comments_table")).getText()).contains("ID", "Comments", "Comment",
 				comment.getCommentId().toString(), comment.getCommentText());
-		// go to "/suggestions/{id}/newComment"
+		// go to "/suggestions/{sugg.id}/delete/{comm.id}"
 		driver.get(suggestionsUrlSlash + suggestion.getId() + "/delete/" + comment.getCommentId());
 
 		// user number 2 log himself
@@ -442,7 +442,7 @@ public class CommentWebControllerIT {
 				"Suggestion:", suggestion.getSuggestionText(), "Logout");
 		assertThat(driver.findElement(By.id("comments_table")).getText()).contains("ID", "Comments", "Comment",
 				comment.getCommentId().toString(), comment.getCommentText());
-		// go to "/suggestions/{id}/newComment"
+		// go to "/suggestions/{sugg.id}/delete/{comm.id}"
 		driver.get(suggestionsUrlSlash + suggestion.getId() + "/delete/" + comment.getCommentId());
 
 		// user number 2 log himself
@@ -453,9 +453,9 @@ public class CommentWebControllerIT {
 		driver2.findElement(By.name("password")).sendKeys(PASSWORD);
 		// submit login
 		driver2.findElement(By.name("btn_submit")).click();
-		// go to comments page
+		// go to "suggestions/{sugg.id}/comments"
 		driver2.get(suggestionsUrlSlash + suggestion.getId() + "/comments");
-		// go to "/suggestions/delete/{id}"
+		// go to "suggestions/{sugg.id}/delete/{comm.id}"
 		driver2.findElement(By.linkText("Delete")).click();
 		// delete by clicking the button
 		assertThat(suggestionRepository.findAll().size()).isEqualTo(1);
