@@ -1,0 +1,10 @@
+# Suggestions Project
+
+A Spring Boot Applications to receive and manage suggestions and comments.
+It allows someone who want to receive anonymous suggestions and comments to receive them and manage them by hiding, editing and deleting them.
+
+GitHubActions: [![Java CI with Maven in Lnx/Mac, Coverage and Mutation Testing](https://github.com/edoardodini/suggestions-project/actions/workflows/mavenMutationTesting.yml/badge.svg)](https://github.com/edoardodini/suggestions-project/actions/workflows/mavenMutationTesting.yml) [![Java CI with Maven (SonarQube and Coveralls)](https://github.com/edoardodini/suggestions-project/actions/workflows/maven.yml/badge.svg)](https://github.com/edoardodini/suggestions-project/actions/workflows/maven.yml)
+
+Coveralls: [![Coverage Status](https://coveralls.io/repos/github/edoardodini/suggestions-project/badge.svg?branch=main)](https://coveralls.io/github/edoardodini/suggestions-project?branch=main)
+
+SonarCloud: [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=edoardodini_suggestions-project&metric=alert_status)](https://sonarcloud.io/dashboard?id=edoardodini_suggestions-project) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=edoardodini_suggestions-project&metric=bugs)](https://sonarcloud.io/dashboard?id=edoardodini_suggestions-project) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=edoardodini_suggestions-project&metric=code_smells)](https://sonarcloud.io/dashboard?id=edoardodini_suggestions-project) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=edoardodini_suggestions-project&metric=coverage)](https://sonarcloud.io/dashboard?id=edoardodini_suggestions-project) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=edoardodini_suggestions-project&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=edoardodini_suggestions-project)
