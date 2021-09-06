@@ -91,6 +91,10 @@
 
 		<skip.unit-tests>false</skip.unit-tests>
 		<skip.integration-tests>false</skip.integration-tests>
+
+		<spring.security.user.name>admin</spring.security.user.name>
+		<spring.security.user.password>admin</spring.security.user.password>
+		<spring.security.user.roles>admin</spring.security.user.roles>
 	</properties>
 
 	<dependencies>
@@ -456,7 +460,9 @@
 									<systemPropertyVariables>
 										<spring.datasource.url>jdbc:mysql://localhost:${mysql.port}/testdb</spring.datasource.url>
 										<spring.datasource.username>user</spring.datasource.username>
-										<spring.datasource.password>password</spring.datasource.password>
+										<spring.security.user.name>${spring.security.user.name}</spring.security.user.name>
+										<spring.security.user.password>${spring.security.user.password}</spring.security.user.password>
+										<spring.security.user.roles>${spring.security.user.roles}</spring.security.user.roles>
 									</systemPropertyVariables>
 								</configuration>
 							</execution>
@@ -488,6 +494,9 @@
 						<configuration>
 							<systemPropertyVariables>
 								<server.port>${tomcat.http.port}</server.port>
+								<spring.security.user.name>${spring.security.user.name}</spring.security.user.name>
+								<spring.security.user.password>${spring.security.user.password}</spring.security.user.password>
+								<spring.security.user.roles>${spring.security.user.roles}</spring.security.user.roles>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
