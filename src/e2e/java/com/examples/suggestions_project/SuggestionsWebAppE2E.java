@@ -107,7 +107,12 @@ public class SuggestionsWebAppE2E { // NOSONAR not a standard testcase name
 		Random random = new Random();
 		// creating a "random" prefix for suggestions and comments in order
 		// to have different suggestions and comments between two runs of the test
-		int randomPrefix = random.nextInt(1000) + 100;
+		String setOfCharacters = "abcdefghijklmnopqrstuvwxyz";
+        char randomChar1 = setOfCharacters.charAt(random.nextInt(setOfCharacters.length()));
+        char randomChar2 = setOfCharacters.charAt(random.nextInt(setOfCharacters.length()));
+        char randomChar3 = setOfCharacters.charAt(random.nextInt(setOfCharacters.length()));
+        char[] chars = {randomChar1, randomChar2, randomChar3, '_'};
+		String randomPrefix = new String(chars);
 		// a generic user create some suggestions and comments
 		// first suggestion
 		String firstSuggestionText = randomPrefix + "suggestionOne";
