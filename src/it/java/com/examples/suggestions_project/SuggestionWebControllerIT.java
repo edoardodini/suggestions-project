@@ -598,8 +598,9 @@ public class SuggestionWebControllerIT {
 		assertThat(driver.findElement(By.id("suggestions_table")).getText()).contains("Suggestions", "ID", "Suggestion",
 				suggestion.getId().toString(), suggestion.getSuggestionText());
 		assertThat(driver.getPageSource()).contains("No hidden suggestions");
+		By byHiddenSuggestionTableId = By.id("hiddenSuggestions_table");
 		assertThatThrownBy(() -> {
-			driver.findElement(By.id("hiddenSuggestions_table"));
+			driver.findElement(byHiddenSuggestionTableId);
 		}).isInstanceOf(NoSuchElementException.class);
 	}
 
@@ -625,8 +626,9 @@ public class SuggestionWebControllerIT {
 		assertThat(driver.findElement(By.id("hiddenSuggestions_table")).getText()).contains("Hidden suggestions", "ID",
 				"Suggestion", suggestion.getId().toString(), suggestion.getSuggestionText());
 		assertThat(driver.getPageSource()).contains("No suggestions");
+		By bySuggestionTableId = By.id("suggestions_table");
 		assertThatThrownBy(() -> {
-			driver.findElement(By.id("suggestions_table"));
+			driver.findElement(bySuggestionTableId);
 		}).isInstanceOf(NoSuchElementException.class);
 	}
 
