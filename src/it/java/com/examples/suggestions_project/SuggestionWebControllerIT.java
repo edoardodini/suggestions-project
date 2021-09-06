@@ -1,12 +1,14 @@
 package com.examples.suggestions_project;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -556,6 +558,92 @@ public class SuggestionWebControllerIT {
 		assertThat(driver.getCurrentUrl()).isEqualTo(errorUrl);
 		assertThat(driver.getPageSource()).contains("Error", "Home",
 				"It is not possible to delete a suggestion with the id: " + suggestion.getId());
+	}
+
+	@Test
+	public void testEditSuggestionButNoMoreAdminSoLoginPage() {
+		adminLogin();
+		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestionNumberOne", true));
+		// go to "/suggestions/edit/{sugg.id}"
+		driver.get(editSuggestionUrl + suggestion.getId());
+		// the user delete all cookies so it is no more admin
+		driver.manage().deleteAllCookies();
+		// edit the suggestion but no more admin so login page
+		driver.findElement(By.name("suggestionText")).clear();
+		String modifiedSuggestion = "modified_suggestion";
+		driver.findElement(By.name("suggestionText")).sendKeys(modifiedSuggestion);
+		driver.findElement(By.name("btn_submit")).click();
+		// the operation is not performed and the current page is "/login"
+		assertThat(driver.getCurrentUrl()).isEqualTo(loginUrl);
+		driver.get(suggestionsUrl);
+		assertThat(driver.findElement(By.id("suggestions_table")).getText()).contains("Suggestions", "ID", "Suggestion",
+				suggestion.getId().toString(), suggestion.getSuggestionText());
+		assertThat(driver.findElement(By.id("suggestions_table")).getText()).doesNotContain(modifiedSuggestion);
+	}
+
+	@Test
+	public void testHideSuggestionButNoMoreAdminSoLoginPage() {
+		adminLogin();
+		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestionNumberOne", true));
+		// go to "/suggestions/hide/{id}"
+		driver.get(hideSuggestionUrl + suggestion.getId());
+		assertThat(driver.getPageSource()).contains("Want to hide?");
+		// the user delete all cookies so it is no more admin
+		driver.manage().deleteAllCookies();
+		driver.findElement(By.name("btn_submit")).click();
+		// the operation is not performed and the current page is "/login"
+		assertThat(driver.getCurrentUrl()).isEqualTo(loginUrl);
+		adminLogin();
+		driver.get(suggestionsUrl);
+		assertThat(driver.findElement(By.id("suggestions_table")).getText()).contains("Suggestions", "ID", "Suggestion",
+				suggestion.getId().toString(), suggestion.getSuggestionText());
+		assertThat(driver.getPageSource()).contains("No hidden suggestions");
+		assertThatThrownBy(() -> {
+			driver.findElement(By.id("hiddenSuggestions_table"));
+		}).isInstanceOf(NoSuchElementException.class);
+	}
+
+	@Test
+	public void testShowSuggestionButNoMoreAdminSoLoginPage() {
+		adminLogin();
+		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestionNumberOne", true));
+		// go to "/suggestions/hide/{id}"
+		driver.get(hideSuggestionUrl + suggestion.getId());
+		assertThat(driver.getPageSource()).contains("Want to hide?");
+		// hide the suggestion
+		driver.findElement(By.name("btn_submit")).click();
+		// go to "/suggestions/hide/{id}" to show
+		driver.get(hideSuggestionUrl + suggestion.getId());
+		assertThat(driver.getPageSource()).contains("Want to show?");
+		// the user delete all cookies so it is no more admin
+		driver.manage().deleteAllCookies();
+		driver.findElement(By.name("btn_submit")).click();
+		// the operation is not performed and the current page is "/login"
+		assertThat(driver.getCurrentUrl()).isEqualTo(loginUrl);
+		adminLogin();
+		driver.get(suggestionsUrl);
+		assertThat(driver.findElement(By.id("hiddenSuggestions_table")).getText()).contains("Hidden suggestions", "ID",
+				"Suggestion", suggestion.getId().toString(), suggestion.getSuggestionText());
+		assertThat(driver.getPageSource()).contains("No suggestions");
+		assertThatThrownBy(() -> {
+			driver.findElement(By.id("suggestions_table"));
+		}).isInstanceOf(NoSuchElementException.class);
+	}
+
+	@Test
+	public void testDeleteSuggestionButNoMoreAdminSoLoginPage() {
+		adminLogin();
+		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestionNumberOne", true));
+		// go to "/suggestions/delete/{id}"
+		driver.get(deleteSuggestionUrl + suggestion.getId());
+		// the user delete all cookies so it is no more admin
+		driver.manage().deleteAllCookies();
+		// delete the comment but no more admin
+		driver.findElement(By.name("btn_submit")).click();
+		assertThat(driver.getCurrentUrl()).isEqualTo(loginUrl);
+		driver.get(suggestionsUrl);
+		assertThat(driver.getPageSource()).contains("Suggestions", "Suggestion", "ID", suggestion.getId().toString(),
+				suggestion.getSuggestionText());
 	}
 
 	private void adminLogin() {

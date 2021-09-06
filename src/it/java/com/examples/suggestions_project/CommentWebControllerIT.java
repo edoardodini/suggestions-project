@@ -472,6 +472,24 @@ public class CommentWebControllerIT {
 		assertThat(driver.getPageSource()).contains("Error", "Home", "It is not possible to delete a comment with id:",
 				comment.getCommentId().toString());
 	}
+	
+	@Test
+	public void testDeleteCommentButNoMoreAdminSoLoginPage() {
+		adminLogin();
+		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestion", true));
+		Comment comment = commentRepository.save(new Comment(null, "comment", suggestion));
+		// go to "/suggestions/{sugg.id}/delete/{comm.id}"
+		driver.get(suggestionsUrlSlash + suggestion.getId() + "/delete/" + comment.getCommentId());
+		// the user delete all cookies so it is no more admin
+		driver.manage().deleteAllCookies();
+		// delete the comment but no more admin so action not performed and go to login
+		driver.findElement(By.name("btn_submit")).click();
+		assertThat(driver.getCurrentUrl()).isEqualTo(loginUrl);
+		driver.get(suggestionsUrlSlash + suggestion.getId() + "/comments");
+		// the comment has not been deleted
+		assertThat(driver.findElement(By.id("comments_table")).getText()).contains("ID", "Comments", "Comment",
+				comment.getCommentId().toString(), comment.getCommentText());
+	}
 
 	private void adminLogin() {
 		// go to login page
