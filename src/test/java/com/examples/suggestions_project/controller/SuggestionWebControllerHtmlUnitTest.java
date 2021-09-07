@@ -107,7 +107,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("New suggestion")
 				.containsOnlyOnce("Logged as generic user").doesNotContain("No suggestions");
 		HtmlTable table = page.getHtmlElementById("suggestions_table");
-		assertThat(removeWindowsCR(table.asText())).isEqualTo(
+		assertThat(removeWindowsCR(table.asNormalizedText())).isEqualTo(
 				"Suggestions\n" + "ID	Suggestion\n" + "1	suggestion1	Comments\n" + "2	suggestion2	Comments");
 		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/");
 		assertThat(page.getAnchors().get(1).getHrefAttribute()).isEqualTo("/suggestions/new");
@@ -135,7 +135,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/");
 		assertThat(page.getAnchors().get(1).getHrefAttribute()).isEqualTo("/suggestions/new");
 		HtmlTable table = page.getHtmlElementById("suggestions_table");
-		assertThat(removeWindowsCR(table.asText())).isEqualTo(
+		assertThat(removeWindowsCR(table.asNormalizedText())).isEqualTo(
 				"Suggestions\n" + "ID	Suggestion\n" + "1	suggestion1	Comments	Edit	Hide	Delete\n"
 						+ "2	suggestion2	Comments	Edit	Hide	Delete");
 		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/");
@@ -165,7 +165,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/");
 		assertThat(page.getAnchors().get(1).getHrefAttribute()).isEqualTo("/suggestions/new");
 		HtmlTable table = page.getHtmlElementById("hiddenSuggestions_table");
-		assertThat(removeWindowsCR(table.asText())).isEqualTo(
+		assertThat(removeWindowsCR(table.asNormalizedText())).isEqualTo(
 				"Hidden suggestions\n" + "ID	Suggestion\n" + "1	suggestion1	Comments	Edit	Show	Delete\n"
 						+ "2	suggestion2	Comments	Edit	Show	Delete");
 		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/");
@@ -197,11 +197,11 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/");
 		assertThat(page.getAnchors().get(1).getHrefAttribute()).isEqualTo("/suggestions/new");
 		HtmlTable table = page.getHtmlElementById("suggestions_table");
-		assertThat(removeWindowsCR(table.asText())).isEqualTo(
+		assertThat(removeWindowsCR(table.asNormalizedText())).isEqualTo(
 				"Suggestions\n" + "ID	Suggestion\n" + "1	suggestion1	Comments	Edit	Hide	Delete\n"
 						+ "2	suggestion2	Comments	Edit	Hide	Delete");
 		HtmlTable hiddenTable = page.getHtmlElementById("hiddenSuggestions_table");
-		assertThat(removeWindowsCR(hiddenTable.asText())).isEqualTo(
+		assertThat(removeWindowsCR(hiddenTable.asNormalizedText())).isEqualTo(
 				"Hidden suggestions\n" + "ID	Suggestion\n" + "3	suggestion3	Comments	Edit	Show	Delete\n"
 						+ "4	suggestion4	Comments	Edit	Show	Delete");
 		assertThat(page.getAnchors().get(0).getHrefAttribute()).isEqualTo("/");
@@ -302,7 +302,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 		HtmlForm form = page.getFormByName("update_form");
 		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Update");
-		assertThat(form.getInputByValue(oldSuggestion).asText()).isEqualTo(oldSuggestion);
+		assertThat(form.getInputByValue(oldSuggestion).asNormalizedText()).isEqualTo(oldSuggestion);
 		verify(suggestionService).getSuggestionById(1L);
 		verifyNoMoreInteractions(suggestionService);
 	}
@@ -332,7 +332,7 @@ public class SuggestionWebControllerHtmlUnitTest {
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 		HtmlForm form = page.getFormByName("new_form");
 		assertThat(form.getButtonByName("btn_submit").getTextContent()).isEqualTo("Save");
-		assertThat(form.getInputByName("suggestionText").asText()).isEmpty();
+		assertThat(form.getInputByName("suggestionText").asNormalizedText()).isEmpty();
 		verifyNoMoreInteractions(suggestionService);
 	}
 

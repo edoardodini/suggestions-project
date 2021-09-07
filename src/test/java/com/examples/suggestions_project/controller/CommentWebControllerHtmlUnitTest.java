@@ -76,7 +76,7 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/suggestions/1/comments");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Suggestions")
 				.containsOnlyOnce("Logged as Admin");
-		assertThat(page.getFormByName("logout_form").getButtonByName("btn_logout").asText()).isEqualTo("Logout");
+		assertThat(page.getFormByName("logout_form").getButtonByName("btn_logout").asNormalizedText()).isEqualTo("Logout");
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/suggestions/1/comments");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Suggestion: " + suggestionTextToBeFound);
 		HtmlTable table = page.getHtmlElementById("comments_table");
-		assertThat(removeWindowsCR(table.asText()))
+		assertThat(removeWindowsCR(table.asNormalizedText()))
 				.isEqualTo("Comments\n" + "ID	Comment\n" + "1	comment1\n" + "2	comment2");
 	}
 
@@ -125,7 +125,7 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/suggestions/1/comments");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Suggestion: " + suggestionTextToBeFound);
 		HtmlTable table = page.getHtmlElementById("comments_table");
-		assertThat(removeWindowsCR(table.asText()))
+		assertThat(removeWindowsCR(table.asNormalizedText()))
 				.isEqualTo("Comments\n" + "ID	Comment\n" + "1	comment1	Delete\n" + "2	comment2	Delete");
 	}
 
@@ -159,7 +159,7 @@ public class CommentWebControllerHtmlUnitTest {
 				.containsOnlyOnce("Comment: ").containsOnlyOnce("Save");
 		HtmlForm form = page.getFormByName("newComment_form");
 		assertThat(form.getButtonByName("btn_save").getTextContent()).isEqualTo("Save");
-		assertThat(form.getInputByName("commentText").asText()).isEmpty();
+		assertThat(form.getInputByName("commentText").asNormalizedText()).isEmpty();
 	}
 
 	@Test
@@ -206,7 +206,7 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/suggestions/1/delete/1");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Delete comment")
 				.containsOnlyOnce("Want to delete?").containsOnlyOnce("Yes");
-		assertThat(page.getFormByName("delete_form").getButtonByName("btn_submit").asText()).isEqualTo("Yes");
+		assertThat(page.getFormByName("delete_form").getButtonByName("btn_submit").asNormalizedText()).isEqualTo("Yes");
 	}
 
 	@Test
