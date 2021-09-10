@@ -78,6 +78,6 @@ public class SuggestionRestControllerIT {
 				.get("/api/suggestions/" + firstSuggestion.getId()).as(Suggestion.class);
 		assertThat(suggestion1).isEqualTo(firstSuggestion);
 		given().contentType(MediaType.APPLICATION_JSON_VALUE).when().get("/api/suggestions/" + secondSuggestion.getId())
-				.then().statusCode(200).content(isEmptyOrNullString());
+				.then().statusCode(200).contentType(is(emptyOrNullString()));
 	}
 }

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.4.RELEASE</version>
+		<version>2.5.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.examples</groupId>
@@ -129,13 +129,12 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<version>1.4.199</version><!--$NO-MVN-MAN-VER$ -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<!-- the default version has a bug, this has not -->
-			<version>8.0.25</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 
 		<!-- Dependency for Spring Boot Testing -->
@@ -144,6 +143,23 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing 
+			JUnit 4 has been removed from spring-boot-starter-test in new versions of 
+			Spring Boot, so we have to add the Jupiter vintage explicitly. hamcrest-core 
+			is excluded in favor of org.hamcrest:hamcrest that is part of spring-boot-starter-test -->
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<!-- Dependency for performing html unit testing -->
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
@@ -342,6 +358,10 @@
 						<excludes>
 							<exclude>**/*Application.*</exclude>
 							<exclude>**/model/*</exclude>
+							<!-- The following is just to avoid the instrumentation error (when 
+								running tests that use HtmlUnit) due to the HtmlUnit class StyleAttributes$Definition 
+								(method too large) -->
+							<exclude>**/htmlunit/*</exclude>
 						</excludes>
 					</configuration>
 					<executions>
