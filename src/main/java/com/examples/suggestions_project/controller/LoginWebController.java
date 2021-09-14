@@ -14,10 +14,10 @@ public class LoginWebController {
 
 	@Autowired
 	private AuthService authService;
-	
+
 	@GetMapping("/login")
 	public String login(Model model) {
-		if(authService.isAdmin()) {
+		if (authService.isAdmin()) {
 			model.addAttribute(USER_ATTRIBUTE, "admin");
 		}
 		return "login";

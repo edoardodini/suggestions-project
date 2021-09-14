@@ -472,7 +472,7 @@ public class CommentWebControllerIT {
 		assertThat(driver.getPageSource()).contains("Error", "Home", "It is not possible to delete a comment with id:",
 				comment.getCommentId().toString());
 	}
-	
+
 	@Test
 	public void testDeleteCommentButNoMoreAdminSoLoginPage() {
 		adminLogin();

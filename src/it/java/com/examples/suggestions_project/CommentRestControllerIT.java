@@ -82,6 +82,6 @@ public class CommentRestControllerIT {
 		// read comments with a get
 		Comment[] comments = given().contentType(MediaType.APPLICATION_JSON_VALUE).when()
 				.get("/api/suggestions/" + suggestion.getId() + "/comments").as(Comment[].class);
-		assertThat(comments).containsExactly(firstComment,secondComment);
+		assertThat(comments).containsExactly(firstComment, secondComment);
 	}
 }

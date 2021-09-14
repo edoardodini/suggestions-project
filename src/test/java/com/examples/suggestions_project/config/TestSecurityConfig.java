@@ -13,6 +13,6 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
         // Disable CSRF
         httpSecurity.csrf().disable()
                 // Permit all requests without authentication
-                .authorizeRequests().anyRequest().permitAll();
-    }
+				.authorizeRequests().anyRequest().permitAll();
+	}
 }

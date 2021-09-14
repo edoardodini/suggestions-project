@@ -15,10 +15,10 @@ import com.examples.suggestions_project.services.CommentService;
 @RestController
 @RequestMapping("api/suggestions/{suggestionId}/comments")
 public class CommentRestController {
-	
+
 	@Autowired
 	CommentService commentService;
-	
+
 	@GetMapping
 	public List<Comment> getAllComments(@PathVariable Long suggestionId) {
 		if (!commentService.getCommentsBySuggestionId(suggestionId).isEmpty() && commentService

@@ -8,38 +8,38 @@ import org.junit.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class ActualUserTest {
-	
+
 	UserDetails userDetails;
-	
+
 	@Test
 	public void testWithObject() {
-		Object object= new Object();
-		ActualUser actualUser= new ActualUser(object);
+		Object object = new Object();
+		ActualUser actualUser = new ActualUser(object);
 		assertThat(actualUser.getUsername()).isEqualTo(object.toString());
 	}
 
 	@Test
 	public void testWithString() {
 		String objectString = "obcjectString";
-		ActualUser actualUser= new ActualUser(objectString);
+		ActualUser actualUser = new ActualUser(objectString);
 		assertThat(actualUser.getUsername()).isEqualTo(objectString);
 	}
-	
+
 	@Test
 	public void testWithUserDetailsOfAdmin() {
 		String expectedUsername = "admin";
 		userDetails = mock(UserDetails.class);
 		when(userDetails.getUsername()).thenReturn(expectedUsername);
-		ActualUser actualUser= new ActualUser(userDetails);
+		ActualUser actualUser = new ActualUser(userDetails);
 		assertThat(actualUser.getUsername()).isEqualTo(expectedUsername);
 	}
-	
+
 	@Test
 	public void testWithUserDetailsOfNotAdmin() {
 		String expectedUsername = "notAdmin";
 		userDetails = mock(UserDetails.class);
 		when(userDetails.getUsername()).thenReturn(expectedUsername);
-		ActualUser actualUser= new ActualUser(userDetails);
+		ActualUser actualUser = new ActualUser(userDetails);
 		assertThat(actualUser.getUsername()).isEqualTo(expectedUsername);
 	}
 }

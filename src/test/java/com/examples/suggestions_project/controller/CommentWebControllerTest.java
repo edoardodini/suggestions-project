@@ -321,7 +321,7 @@ public class CommentWebControllerTest {
 	@Test
 	public void testPostSaveThrowsExceptionBecauseSuggestionNotVisibleAndNotAdmin() throws Exception {
 		when(authService.isAdmin()).thenReturn(false);
-		when(suggestionService.getSuggestionById(1L)).thenReturn(new Suggestion(1L,"notVisibleSuggestion",false));
+		when(suggestionService.getSuggestionById(1L)).thenReturn(new Suggestion(1L, "notVisibleSuggestion", false));
 		mvc.perform(post("/suggestions/1/save").param("commentText", "comment"))
 				.andExpect(view().name("redirect:/errorPage"))// go to errorPage
 				.andExpect(
