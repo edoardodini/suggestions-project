@@ -386,6 +386,49 @@ public class CommentWebControllerIT {
 	}
 
 	@Test
+	public void testNewCommentButSuggestionNoVisible() {
+		// creation of a second web driver to act as another user
+		WebDriver driver2 = new HtmlUnitDriver();
+		Suggestion suggestion = suggestionRepository.save(new Suggestion(null, "suggestion", true));
+		// go to "/suggestions"
+		driver.get(suggestionsUrl);
+		assertThat(driver.getPageSource()).contains("Home", "New suggestion", "Logged as generic user");
+		assertThat(driver.findElement(By.id("suggestions_table")).getText()).contains("ID", "Suggestions",
+				suggestion.getId().toString(), suggestion.getSuggestionText());
+		// go to "/suggestions/{sugg.id}/newComment"
+		driver.get(suggestionsUrlSlash + suggestion.getId() + "/newComment");
+		// fill the form
+		driver.findElement(By.name("commentText")).sendKeys("new");
+
+		// user number 2 log himself
+		// go to login page
+		driver2.get(loginUrl);
+		// fill the form
+		driver2.findElement(By.name("username")).sendKeys(USERNAME);
+		driver2.findElement(By.name("password")).sendKeys(PASSWORD);
+		// submit login
+		driver2.findElement(By.name("btn_submit")).click();
+		// go to suggestions page
+		driver2.get(suggestionsUrl);
+		// go to "/suggestions/delete/{id}"
+		driver2.findElement(By.linkText("Hide")).click();
+		// hide by clicking the button
+		assertThat(suggestionRepository.findByVisible(true).size()).isEqualTo(1);
+		assertThat(suggestionRepository.findByVisible(false).size()).isZero();
+		driver2.findElement(By.name("btn_submit")).click();
+		assertThat(suggestionRepository.findByVisible(false).size()).isEqualTo(1);
+		assertThat(suggestionRepository.findByVisible(true).size()).isZero();
+		driver2.quit();
+
+		// user 1 try to edit the comment but the suggestion is hidden
+		// submit the edit
+		driver.findElement(By.name("btn_save")).click();
+		assertThat(driver.getCurrentUrl()).isEqualTo(errorUrl);
+		assertThat(driver.getPageSource()).contains("Error", "Home",
+				"It is not possible to save a comment for suggestion with id:", suggestion.getId().toString());
+	}
+
+	@Test
 	public void testDeleteCommentButNoSuggestionNeitherCommentToDelete() {
 		// creation of a second web driver to act as another user
 		WebDriver driver2 = new HtmlUnitDriver();
