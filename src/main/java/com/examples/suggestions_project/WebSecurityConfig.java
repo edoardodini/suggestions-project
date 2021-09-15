@@ -12,7 +12,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers("/", "/api/**", "/suggestions", "/suggestions/new", "/suggestions/save",
-						"/suggestions/**/comments", "/suggestions/**/newComment", "/suggestions/**/save")
+						"/suggestions/**/comments", "/suggestions/**/newComment", "/suggestions/**/save", "/errorPage")
 				.permitAll().anyRequest().hasRole("admin").and().formLogin().loginPage("/login").permitAll().and()
 				.logout().permitAll();
 	}
