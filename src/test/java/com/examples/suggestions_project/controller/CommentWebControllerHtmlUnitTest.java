@@ -76,7 +76,8 @@ public class CommentWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/suggestions/1/comments");
 		assertThat(page.getBody().getTextContent()).containsOnlyOnce("Home").containsOnlyOnce("Suggestions")
 				.containsOnlyOnce("Logged as Admin");
-		assertThat(page.getFormByName("logout_form").getButtonByName("btn_logout").asNormalizedText()).isEqualTo("Logout");
+		assertThat(page.getFormByName("logout_form").getButtonByName("btn_logout").asNormalizedText())
+				.isEqualTo("Logout");
 	}
 
 	@Test

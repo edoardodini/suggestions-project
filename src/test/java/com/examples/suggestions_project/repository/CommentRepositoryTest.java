@@ -46,11 +46,12 @@ public class CommentRepositoryTest {
 		assertThat(commentsOfFirstSuggestion).containsExactly(commentToFirstSuggestion1, commentToFirstSuggestion2);
 		assertThat(commentsOfSecondSuggestion).containsExactly(commentToSecondSuggestion1, commentToSecondSuggestion2);
 	}
-	
+
 	@Test
 	public void saveRaiseException() {
-		Comment comment = new Comment(null,"comment", new Suggestion(null,"suggestion",true));
-		assertThatThrownBy(()->commentRepository.save(comment)).isInstanceOf(InvalidDataAccessApiUsageException.class);
+		Comment comment = new Comment(null, "comment", new Suggestion(null, "suggestion", true));
+		assertThatThrownBy(() -> commentRepository.save(comment))
+				.isInstanceOf(InvalidDataAccessApiUsageException.class);
 	}
 
 }

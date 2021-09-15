@@ -108,7 +108,7 @@ public class CommentServiceTest {
 		inOrder.verify(commentRepository).deleteById(idToDelete);
 		inOrder.verifyNoMoreInteractions();
 	}
-	
+
 	@Test
 	public void testGetCommentsBySuggestionIdEmpty() {
 		when(commentRepository.findBySuggestionId(1L)).thenReturn(emptyList());

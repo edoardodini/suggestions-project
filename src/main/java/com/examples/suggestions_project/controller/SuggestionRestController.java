@@ -14,15 +14,15 @@ import com.examples.suggestions_project.services.SuggestionService;
 @RestController
 @RequestMapping("api/suggestions")
 public class SuggestionRestController {
-	
+
 	@Autowired
 	private SuggestionService suggestionService;
-	
+
 	@GetMapping
 	public List<Suggestion> getAllSuggestions() {
 		return suggestionService.getAllByVisible(true);
 	}
-	
+
 	@GetMapping("/{suggestionId}")
 	public Suggestion getSuggestionById(@PathVariable Long suggestionId) {
 		return suggestionService.getSuggestionByIdAndVisible(suggestionId, true);
