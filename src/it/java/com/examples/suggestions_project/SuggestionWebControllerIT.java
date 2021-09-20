@@ -12,6 +12,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -34,8 +35,10 @@ import com.examples.suggestions_project.repository.SuggestionRepository;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SuggestionWebControllerIT {
 
-	private static final String USERNAME = "admin";
-	private static final String PASSWORD = "admin";
+	@Value("${spring.security.user.name}")
+	private String USERNAME;
+	@Value("${spring.security.user.password}")
+	private String PASSWORD;
 
 	@Autowired
 	private SuggestionRepository suggestionRepository;

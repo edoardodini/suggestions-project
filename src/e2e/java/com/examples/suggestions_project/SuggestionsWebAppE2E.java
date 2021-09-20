@@ -27,8 +27,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class SuggestionsWebAppE2E { // NOSONAR not a standard testcase name
 
-	private static final String USERNAME = System.getProperty("spring.security.user.name", "admin");
-	private static final String PASSWORD = System.getProperty("spring.security.user.password", "admin");
+	private String USERNAME = System.getProperty("spring.security.user.name", "adminadminadminadmin");
+	private String PASSWORD = System.getProperty("spring.security.user.password", "admin");
 	private static int port = Integer.parseInt(System.getProperty("server.port", "8080"));
 
 	private String baseUrl = "http://localhost:" + port;

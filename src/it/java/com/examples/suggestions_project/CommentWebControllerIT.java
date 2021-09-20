@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -37,9 +38,11 @@ public class CommentWebControllerIT {
 
 	private static final String NO_COMMENT_FOUND_WITH_SUGGESTION_ID = "No comment found with suggestion id: ";
 	private static final String NO_SUGGESTION_FOUND_WITH_ID = "No suggestion found with suggestion id: ";
-	private static final String USERNAME = "admin";
-	private static final String PASSWORD = "admin";
 	private static final String NO_COMMENT_FOUND_WITH_COMMENT_ID = "No comment found with comment id: ";
+	@Value("${spring.security.user.name}")
+	private String USERNAME;
+	@Value("${spring.security.user.password}")
+	private String PASSWORD;
 
 	@Autowired
 	private SuggestionRepository suggestionRepository;

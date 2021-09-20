@@ -92,9 +92,12 @@
 		<skip.unit-tests>false</skip.unit-tests>
 		<skip.integration-tests>false</skip.integration-tests>
 
-		<spring.security.user.name>admin</spring.security.user.name>
-		<spring.security.user.password>admin</spring.security.user.password>
+		<spring.security.user.name>adminPom</spring.security.user.name>
+		<spring.security.user.password>adminPom</spring.security.user.password>
 		<spring.security.user.roles>admin</spring.security.user.roles>
+
+		<mysql.user>user</mysql.user>
+		<mysql.password>password</mysql.password>
 	</properties>
 
 	<dependencies>
@@ -266,8 +269,8 @@
 								<env>
 									<MYSQL_ROOT_PASSWORD>abc123</MYSQL_ROOT_PASSWORD>
 									<MYSQL_DATABASE>testdb</MYSQL_DATABASE>
-									<MYSQL_USER>user</MYSQL_USER>
-									<MYSQL_PASSWORD>password</MYSQL_PASSWORD>
+									<MYSQL_USER>${mysql.user}</MYSQL_USER>
+									<MYSQL_PASSWORD>${mysql.password}</MYSQL_PASSWORD>
 								</env>
 								<ports>
 									<port>${mysql.port}:3306</port>
@@ -307,8 +310,8 @@
 							</includes>
 							<systemPropertyVariables>
 								<spring.datasource.url>jdbc:mysql://localhost:${mysql.port}/testdb</spring.datasource.url>
-								<spring.datasource.username>user</spring.datasource.username>
-								<spring.datasource.password>password</spring.datasource.password>
+								<spring.datasource.username>${mysql.user}</spring.datasource.username>
+								<spring.datasource.password>${mysql.password}</spring.datasource.password>
 							</systemPropertyVariables>
 						</configuration>
 						<goals>
@@ -478,7 +481,8 @@
 									</arguments>
 									<systemPropertyVariables>
 										<spring.datasource.url>jdbc:mysql://localhost:${mysql.port}/testdb</spring.datasource.url>
-										<spring.datasource.username>user</spring.datasource.username>
+										<spring.datasource.username>${mysql.user}</spring.datasource.username>
+										<spring.datasource.password>${mysql.password}</spring.datasource.password>
 										<spring.security.user.name>${spring.security.user.name}</spring.security.user.name>
 										<spring.security.user.password>${spring.security.user.password}</spring.security.user.password>
 										<spring.security.user.roles>${spring.security.user.roles}</spring.security.user.roles>
