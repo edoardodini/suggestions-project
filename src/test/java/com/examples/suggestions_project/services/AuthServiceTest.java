@@ -17,13 +17,13 @@ public class AuthServiceTest {
 	private AuthService authenticationService;
 
 	@Test
-	@WithMockUser(username = "admin", roles = { "admin" })
+	@WithMockUser(username = "${spring.security.user.name}", roles = { "admin" })
 	public void testIsAdminWhenAdmin() {
 		assertThat(authenticationService.isAdmin()).isTrue();
 	}
 
 	@Test
-	@WithMockUser(username = "notAdmin", roles = { "notAdmin" })
+	@WithMockUser(username = "not" + "${spring.security.user.name}", roles = { "notAdmin" })
 	public void testIsAdminWhenNotAdmin() {
 		assertThat(authenticationService.isAdmin()).isFalse();
 	}

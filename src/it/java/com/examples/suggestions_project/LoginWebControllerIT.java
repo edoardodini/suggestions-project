@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -22,8 +23,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class LoginWebControllerIT {
 
-	private final String USERNAME = "admin";
-	private final String PASSWORD = "admin";
+	@Value("${spring.security.user.name}")
+	private String USERNAME;
+	@Value("${spring.security.user.password}")
+	private String PASSWORD;
 
 	@LocalServerPort
 	private int port;
